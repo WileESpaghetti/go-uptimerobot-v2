@@ -2,9 +2,9 @@ package uptimerobot
 
 import (
 	"bytes"
+	"github.com/gorilla/schema"
 	"net/http"
 	"net/url"
-	"github.com/gorilla/schema"
 )
 
 // Client constants
@@ -18,17 +18,16 @@ const (
 )
 
 type Client struct {
-	ApiKey string `schema:"api_key"`
+	ApiKey     string      `schema:"api_key"`
 	HttpClient http.Client `schema:"-"`
 }
 
 func New(apiKey string) *Client {
 	return &Client{
-		ApiKey: apiKey,
+		ApiKey:     apiKey,
 		HttpClient: http.Client{},
 	}
 }
-
 
 func (c *Client) NewRequest(apiMethod string) (*http.Request, error) {
 	apiUrl := baseUrl + apiMethod
@@ -48,10 +47,8 @@ func (c *Client) NewRequest(apiMethod string) (*http.Request, error) {
 
 	req.Header.Set("User-Agent", defaultUserAgent)
 
-
 	return req, nil
 }
-
 
 //func (*c Client) Do(req *http.Request) (*http.Response, error) {
 //	return nil, nil
