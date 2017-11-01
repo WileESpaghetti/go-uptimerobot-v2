@@ -1,8 +1,10 @@
 package uptimerobot
 
 import (
+	"bytes"
 	"net/http"
 	"net/url"
+	"github.com/gorilla/schema"
 )
 
 // Client constants
@@ -15,13 +17,9 @@ const (
 	baseUrl = "https://api.uptimerobot.com/v2/"
 )
 
-const (
-	_POST_API_KEY = "api_key"
-)
-
 type Client struct {
-	ApiKey string
-	HttpClient http.Client
+	ApiKey string `schema:"api_key"`
+	HttpClient http.Client `schema:"-"`
 }
 
 func New(apiKey string) *Client {
@@ -34,17 +32,22 @@ func New(apiKey string) *Client {
 
 func (c *Client) NewRequest(apiMethod string) (*http.Request, error) {
 	apiUrl := baseUrl + apiMethod
+	formEncoder := schema.NewEncoder()
 
-	req, err := http.NewRequest("POST", apiUrl, nil)
+	form := url.Values{}
+	err := formEncoder.Encode(c, form)
+	if err != nil {
+		return nil, err
+	}
+
+	encodedForm := bytes.NewBufferString(form.Encode())
+	req, err := http.NewRequest("POST", apiUrl, encodedForm)
 	if err != nil {
 		return nil, err
 	}
 
 	req.Header.Set("User-Agent", defaultUserAgent)
 
-	form := url.Values{}
-	form.Set(_POST_API_KEY, c.ApiKey)
-	req.PostForm = form
 
 	return req, nil
 }
