@@ -29,12 +29,17 @@ func New(apiKey string) *Client {
 	}
 }
 
-func (c *Client) NewRequest(apiMethod string) (*http.Request, error) {
+func (c *Client) NewRequest(apiMethod string, data interface{}) (*http.Request, error) {
 	apiUrl := baseUrl + apiMethod
 	formEncoder := schema.NewEncoder()
 
 	form := url.Values{}
 	err := formEncoder.Encode(c, form)
+	if err != nil {
+		return nil, err
+	}
+
+	err = formEncoder.Encode(data, form)
 	if err != nil {
 		return nil, err
 	}
@@ -46,6 +51,7 @@ func (c *Client) NewRequest(apiMethod string) (*http.Request, error) {
 	}
 
 	req.Header.Set("User-Agent", defaultUserAgent)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	return req, nil
 }
