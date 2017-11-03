@@ -17,6 +17,16 @@ const (
 	baseUrl = "https://api.uptimerobot.com/v2/"
 )
 
+type ApiResponse struct {
+	Stat string `json:"stat"`
+	Error *ApiError `json:"error,omitempty"`
+}
+
+type ApiError struct {
+	Type    string `json:"type,omitempty"`
+	Message string `json:"message,omitempty"`
+}
+
 type Client struct {
 	ApiKey     string      `schema:"api_key"`
 	HttpClient http.Client `schema:"-"`
