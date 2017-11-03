@@ -65,7 +65,3 @@ func (c *Client) NewRequest(apiMethod string, data interface{}) (*http.Request, 
 
 	return req, nil
 }
-
-//func (*c Client) Do(req *http.Request) (*http.Response, error) {
-//	return nil, nil
-//}
