@@ -13,6 +13,11 @@ type Monitor struct {
 	Status       int         `schema:"status",json:"status"`
 }
 
+type SingleMonitorResponse struct {
+	ApiResponse
+	Monitor Monitor `json:"monitor"`
+}
+
 type NewMonitorResponse struct {
 	ApiResponse
 	Monitor Monitor `json:"monitor"`
@@ -42,4 +47,28 @@ func (c *Client) NewMonitor(m *Monitor) (*Monitor, error) {
 	m.Id = monitor.Monitor.Id
 
 	return m, nil
+}
+
+func (c *Client) DeleteMonitor(m *Monitor) error {
+	deleteMonitorRequest, err := c.NewRequest("deleteMonitor", m)
+	if err != nil {
+		return err
+	}
+
+	r, err := c.HttpClient.Do(deleteMonitorRequest)
+	if err != nil {
+		return err
+	}
+
+	monitor := &SingleMonitorResponse{}
+	err = json.NewDecoder(r.Body).Decode(monitor)
+	if err != nil {
+		return err
+	}
+
+	if monitor.Error != nil {
+		return fmt.Errorf("%s: %s", monitor.Error.Type, monitor.Error.Message)
+	}
+
+	return nil
 }
