@@ -1,14 +1,21 @@
 package uptimerobot
 
 import (
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
 )
 
 type Monitor struct {
-	FriendlyName string `schema:"friendly_name"`
-	Url          string `schema:"url"`
-	Type         int    `schema:"type"`
+	Id           json.Number `schema:"id,omitempty",json:"id,omitempty"`
+	FriendlyName string      `schema:"friendly_name",json:"friendly_name"`
+	Url          string      `schema:"url",json:"url"`
+	Type         int         `schema:"type",json:"type"`
+	Status       int         `schema:"status",json:"status"`
+}
+
+type NewMonitorResponse struct {
+	ApiResponse
+	Monitor Monitor `json:"monitor"`
 }
 
 func (c *Client) NewMonitor(m *Monitor) (*Monitor, error) {
@@ -22,9 +29,17 @@ func (c *Client) NewMonitor(m *Monitor) (*Monitor, error) {
 		return nil, err
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
-	fmt.Println(err)
-	fmt.Printf("%s", body)
+	monitor := &NewMonitorResponse{}
+	err = json.NewDecoder(r.Body).Decode(monitor)
+	if err != nil {
+		return nil, err
+	}
+
+	if monitor.Error != nil {
+		return nil, fmt.Errorf("%s: %s", monitor.Error.Type, monitor.Error.Message)
+	}
+
+	m.Id = monitor.Monitor.Id
 
 	return m, nil
 }
