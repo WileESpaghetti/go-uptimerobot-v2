@@ -16,7 +16,7 @@ func (e Error) Error() string {
 		return e.ParameterMissingError()
 	}
 
-	return e.ParameterName
+	return e.Type
 }
 
 func (e Error) ParameterMissingError() string {
