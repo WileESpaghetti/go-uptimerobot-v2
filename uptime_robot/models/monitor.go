@@ -10,4 +10,5 @@ type Monitor struct {
 	KeywordValue string             `schema:"keyword_value" json:"keyword_value"`
 	HttpUsername string             `schema:"http_username" json:"http_username"`
 	HttpPassword string             `schema:"http_password" json:"http_password"`
+	Port         OptionalNumber     `schema:"port"          json:"port"`
 }
