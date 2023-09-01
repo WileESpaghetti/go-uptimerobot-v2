@@ -28,7 +28,7 @@ func (p *Account) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) 
 
 	account, err := client.GetAccountDetails()
 	if (err != nil) {
-		fmt.Fprintf(os.Stderr, "Could not get account details")
+		fmt.Fprintf(os.Stderr, "Could not get account details: %s\n", err)
 		return subcommands.ExitFailure
 	}
 
