@@ -6,5 +6,6 @@ type Monitor struct {
 	Type         MonitorType        `schema:"type"          json:"type"`
 	Status       MonitorStatus      `schema:"status"        json:"status"`
 	SubType      MonitorSubType     `schema:"sub_type"      json:"sub_type"`
-	KeywordType  MonitorKeywordType `schema:"keyword_type"      json:"keyword_type"`
+	KeywordType  MonitorKeywordType `schema:"keyword_type"  json:"keyword_type"`
+	KeywordValue string             `schema:"keyword_value" json:"keyword_value"`
 }
