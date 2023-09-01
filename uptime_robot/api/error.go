@@ -4,6 +4,7 @@ import "fmt"
 
 const (
 	ErrorParameterMissing = "missing_parameter"
+	ErrorNotAuthorized = "not_authorized"
 )
 
 type Error struct {
@@ -14,6 +15,8 @@ type Error struct {
 func (e Error) Error() string {
 	if e.Type == ErrorParameterMissing {
 		return e.ParameterMissingError()
+	} else if e.Type == ErrorNotAuthorized {
+		return e.NotAuthorizedError()
 	}
 
 	return e.Type
@@ -21,4 +24,8 @@ func (e Error) Error() string {
 
 func (e Error) ParameterMissingError() string {
 	return fmt.Sprintf("No `%s` parameter found in the API request", e.ParameterName)
+}
+
+func (e Error) NotAuthorizedError() string {
+	return "API key is not authorized to make this request"
 }
