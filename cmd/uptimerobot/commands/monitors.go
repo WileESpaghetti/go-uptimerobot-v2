@@ -38,9 +38,9 @@ func (p *Monitors) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{})
 	}
 
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', tabwriter.Debug)
-	_, _ = fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", "ID", "STATUS", "FRIENDLY NAME", "TYPE", "SUB TYPE", "KEYWORD TYPE", "KEYWORD")
+	_, _ = fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", "ID", "STATUS", "FRIENDLY NAME", "TYPE", "SUB TYPE", "KEYWORD TYPE", "KEYWORD", "USERNAME", "PASSWORD")
 	for _, monitor := range *monitors {
-		_, _ = fmt.Fprintf(w, "%d\t%s\t%s\t%s\t%s\t%s\t%s\n", monitor.Id, monitor.Status, monitor.FriendlyName, monitor.Type, monitor.SubType, monitor.KeywordType, monitor.KeywordValue)
+		_, _ = fmt.Fprintf(w, "%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", monitor.Id, monitor.Status, monitor.FriendlyName, monitor.Type, monitor.SubType, monitor.KeywordType, monitor.KeywordValue, monitor.HttpUsername, monitor.HttpPassword)
 	}
 	_ = w.Flush()
 
