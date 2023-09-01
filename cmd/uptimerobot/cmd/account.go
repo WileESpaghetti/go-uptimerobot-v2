@@ -1,10 +1,8 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -12,7 +10,7 @@ import (
 // accountCmd represents the account command
 var accountCmd = &cobra.Command{
 	Use:   "account",
-	Short: "A brief description of your command",
+	Short: "Display one or many resourcesPrint account information",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -21,6 +19,19 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("account called")
+		if apiClient == nil { // FIXME this validation needs to be moved up a level so that it happens for all commands
+			_, _ = fmt.Fprintf(os.Stderr, "No API client found")
+			return
+		}
+
+		account, err := apiClient.GetAccountDetails()
+		if err != nil {
+			_, _ = fmt.Fprintf(os.Stderr, "Could not get account details: %s\n", err)
+			return
+		}
+
+		fmt.Println(account)
+		return
 	},
 }
 

@@ -1,0 +1,21 @@
+{
+  "stat": "ok",
+  "account": {
+    "email": "example@example.com",
+    "user_id": 123456,
+    "firstname": "First Last",
+    "sms_credits": 0,
+    "payment_processor": null,
+    "payment_period": null,
+    "subscription_expiry_date": null,
+    "monitor_limit": 50,
+    "monitor_interval": 5,
+    "up_monitors": 4,
+    "down_monitors": 2,
+    "paused_monitors": 1,
+    "total_monitors_count": 7,
+    "registered_at": "2010-01-01T11:07:56.000Z",
+    "active_subscription": null,
+    "organizations": []
+  }
+}
