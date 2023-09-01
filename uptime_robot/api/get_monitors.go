@@ -1,24 +1,25 @@
 package api
 
 import (
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
-	"github.com/gorilla/schema"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
+	"github.com/gorilla/schema"
 )
 
 type GetMonitors struct {
 	Envelope
-	Monitors []models.Monitor `json:"monitors,omitempty"`
+	Monitors models.Monitors `json:"monitors,omitempty"`
 }
 
 type GetMonitorsRequest struct {
-	Monitors []models.Monitor `schema:"monitors,omitempty"`
+	Monitors models.Monitors `schema:"monitors,omitempty"`
 }
 
 type GetMonitorsOptions struct {
-	all_time_uptime_ratio     bool //   "all_time_uptime_ratio": "97.890"
+	all_time_uptime_ratio     bool `` //   "all_time_uptime_ratio": "97.890"
 	all_time_uptime_durations bool
 	logs                      bool
 	response_times            bool
@@ -38,7 +39,7 @@ func (m GetMonitorsRequest) RegisterEncoders(e *schema.Encoder) {
 func MonitorsSchemaEncoder(v reflect.Value) string {
 	var ids []string
 
-	m := v.Interface().([]models.Monitor)
+	m := v.Interface().(models.Monitors)
 
 	for _, monitor := range m {
 		id := strconv.Itoa(monitor.Id)
