@@ -2,13 +2,14 @@ package uptime_robot
 
 import (
 	"encoding/json"
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
-	"github.com/gorilla/schema"
 	"net/http"
 	"net/url"
 	"reflect"
 	"strings"
+
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
+	"github.com/gorilla/schema"
 )
 
 const (
@@ -18,19 +19,23 @@ const (
 
 type Client struct {
 	ApiKey     string       `schema:"api_key"`
+	UserAgent  string       `schema:"-"`
+	Url        string       `schema:"-"`
 	HttpClient *http.Client `schema:"-"`
 }
 
 func New(apiKey string) *Client {
 	return &Client{ApiKey: apiKey,
+		Url:        baseUrl,
+		UserAgent:  userAgent,
 		HttpClient: http.DefaultClient}
 }
 
 func (c *Client) NewRequest(apiMethod string, options interface{}) (*http.Request, error) {
-	//return c.Post(url, "application/x-www-form-urlencoded", strings.NewReader(data.Encode()))
-	apiUrl := baseUrl + apiMethod
+	endpoint := c.Url + apiMethod
 
 	form := url.Values{}
+
 	encoder := schema.NewEncoder()
 	err := encoder.Encode(c, form)
 	if err != nil {
@@ -51,12 +56,12 @@ func (c *Client) NewRequest(apiMethod string, options interface{}) (*http.Reques
 	}
 
 	encodedForm := strings.NewReader(form.Encode())
-	req, err := http.NewRequest(http.MethodPost, apiUrl, encodedForm)
+	req, err := http.NewRequest(http.MethodPost, endpoint, encodedForm)
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header.Set("User-Agent", userAgent)
+	req.Header.Set("User-Agent", c.UserAgent)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	return req, nil
@@ -74,9 +79,6 @@ func (c *Client) Get(method string, response interface{}, options interface{}) e
 	}
 
 	defer r.Body.Close()
-
-	//body, _ := ioutil.ReadAll(r.Body)
-	//fmt.Println(string(body))
 
 	err = json.NewDecoder(r.Body).Decode(response)
 	if err != nil {
@@ -102,7 +104,7 @@ func (c *Client) GetAccountDetails() (*models.Account, error) {
 	return &env.Account, err
 }
 
-func (c *Client) GetMonitors(options *api.GetMonitorsRequest) (*[]models.Monitor, error) {
+func (c *Client) GetMonitors(options *api.GetMonitorsRequest) (*models.Monitors, error) {
 	env := &api.GetMonitors{}
 	err := c.Get("getMonitors", env, options)
 	if err != nil {
