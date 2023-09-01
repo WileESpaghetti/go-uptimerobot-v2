@@ -10,12 +10,12 @@ import (
 )
 
 const (
-	baseUrl = "https://api.uptimerobot.com/v2/"
+	baseUrl   = "https://api.uptimerobot.com/v2/"
 	userAgent = "go-uptimerobot-v2/1.0.0 (Language=Go)"
 )
 
 type Client struct {
-	ApiKey string
+	ApiKey     string
 	HttpClient *http.Client
 }
 

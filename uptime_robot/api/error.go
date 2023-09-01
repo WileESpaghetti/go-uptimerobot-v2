@@ -4,11 +4,11 @@ import "fmt"
 
 const (
 	ErrorParameterMissing = "missing_parameter"
-	ErrorNotAuthorized = "not_authorized"
+	ErrorNotAuthorized    = "not_authorized"
 )
 
 type Error struct {
-	Type string `json:"type,omitempty"`
+	Type          string `json:"type,omitempty"`
 	ParameterName string `json:"parameter_name,omitempty"`
 }
 

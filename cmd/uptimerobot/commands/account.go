@@ -31,7 +31,7 @@ func (p *Account) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) 
 	}
 
 	account, err := p.Client.GetAccountDetails()
-	if (err != nil) {
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "Could not get account details: %s\n", err)
 		return subcommands.ExitFailure
 	}
