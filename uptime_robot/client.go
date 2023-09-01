@@ -1,6 +1,7 @@
 package uptime_robot
 
 import (
+	"fmt"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
 	"net/http"
 	"strings"
@@ -12,17 +13,20 @@ const (
 )
 
 type Client struct {
+	ApiKey string
 	HttpClient *http.Client
 }
 
-func New() *Client {
-	return &Client{HttpClient: http.DefaultClient}
+func New(apiKey string) *Client {
+	return &Client{ApiKey: apiKey,
+		HttpClient: http.DefaultClient}
 }
 
-func NewRequest(apiMethod string) (*http.Request, error) {
+func (c *Client) NewRequest(apiMethod string) (*http.Request, error) {
 	apiUrl := baseUrl + apiMethod
 
-	encodedForm := strings.NewReader("")
+	rawForm := fmt.Sprintf("api_key=%s", c.ApiKey)
+	encodedForm := strings.NewReader(rawForm)
 
 	req, err := http.NewRequest(http.MethodPost, apiUrl, encodedForm)
 	if err != nil {
