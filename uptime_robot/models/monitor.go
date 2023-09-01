@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"net/url"
 	"time"
 )
 
@@ -9,6 +10,7 @@ import (
 type Monitor struct {
 	Id             int                `schema:"id,omitempty"  json:"id,omitempty"`
 	FriendlyName   string             `schema:"friendly_name" json:"friendly_name"`
+	Url            *url.URL           `schema:"-"             json:"-"`
 	Type           MonitorType        `schema:"type"          json:"type"`
 	Status         MonitorStatus      `schema:"status"        json:"status"`
 	SubType        MonitorSubType     `schema:"sub_type"      json:"sub_type"`
@@ -25,10 +27,16 @@ type unencodableMonitor Monitor
 
 type JsonMonitor struct {
 	unencodableMonitor
-	CreateDatetime int64 `schema:"create_datetime"      json:"create_datetime"`
+	Url            string `schema:"url"             json:"url"`
+	CreateDatetime int64  `schema:"create_datetime" json:"create_datetime"`
 }
 
 func (jm JsonMonitor) ToMonitor() Monitor {
+	parsedUrl, err := url.Parse(jm.Url)
+	if err != nil {
+		// FICME handle url eoncoding error. Dashboard does some frontend validation, but need to check if API also validates
+	}
+
 	return Monitor{
 		Id:           jm.unencodableMonitor.Id,
 		FriendlyName: jm.unencodableMonitor.FriendlyName,
@@ -46,7 +54,8 @@ func (jm JsonMonitor) ToMonitor() Monitor {
 		// was added to the API at a later date this results in the creation date older pre-existing monitors to
 		// default to `0` (1969-12-31 18:00:00 -0600 CST) since the date of the monitor's creation is unknown.
 		// The only workaround for this seems to be deleting the monitor and adding it again.
-		CreateDatetime: time.Unix(jm.CreateDatetime, 0)}
+		CreateDatetime: time.Unix(jm.CreateDatetime, 0),
+		Url:            parsedUrl}
 }
 
 func (m *Monitor) UnmarshalJSON(data []byte) error {
