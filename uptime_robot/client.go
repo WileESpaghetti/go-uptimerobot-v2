@@ -1,7 +1,9 @@
 package uptime_robot
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
 	"net/http"
 	"strings"
@@ -39,11 +41,28 @@ func (c *Client) NewRequest(apiMethod string) (*http.Request, error) {
 	return req, nil
 }
 
-func (c *Client) GetAccountDetails() (models.Account, error) {
-	return models.Account{Email: "example@example.com",
-		DownMonitors: 2,
-		MonitorLimit: 50,
-		MonitorInterval: 5,
-		PausedMonitors: 1,
-		UpMonitors: 5}, nil
+func (c *Client) GetAccountDetails() (*models.Account, error) {
+	getAccountDetailsRequest, err := c.NewRequest("getAccountDetails")
+	if err != nil {
+		return nil, err
+	}
+
+	r, err := c.HttpClient.Do(getAccountDetailsRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	defer r.Body.Close()
+	accountDetailsResponse := &api.GetAccountDetails{}
+
+	err = json.NewDecoder(r.Body).Decode(accountDetailsResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	if accountDetailsResponse.Stat == api.StatFail {
+		return nil, accountDetailsResponse.Error
+	}
+
+	return &accountDetailsResponse.Account, err
 }
