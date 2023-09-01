@@ -1,12 +1,20 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot"
 	"os"
 
 	"github.com/spf13/cobra"
+)
+
+var (
+	apiKey    string
+	apiClient *uptime_robot.Client
+)
+
+// flags
+const (
+	FlagApiKey = "api-key"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -34,13 +42,8 @@ func Execute() {
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.tmp.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().StringVar(&apiKey, FlagApiKey, "", "config file (default is $HOME/.uptimerobot.yaml)")
+	cobra.OnInitialize(func() {
+		apiClient = uptime_robot.NewClient(apiKey)
+	})
 }
