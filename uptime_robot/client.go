@@ -85,7 +85,7 @@ func (c *Client) Get(method string, response interface{}, options interface{}) e
 		return err
 	}
 
-	if envelop, ok := response.(api.Envelope); ok {
+	if envelop, ok := response.(*api.Envelope); ok {
 		if envelop.Stat == api.StatFail {
 			return envelop.Error
 		}
