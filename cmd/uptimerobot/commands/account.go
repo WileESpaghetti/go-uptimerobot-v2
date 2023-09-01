@@ -10,6 +10,7 @@ import (
 )
 
 type Account struct {
+	Client *uptime_robot.Client
 }
 
 func (*Account) Name() string     { return "account" }
@@ -24,9 +25,12 @@ func (p *Account) SetFlags(f *flag.FlagSet) {
 }
 
 func (p *Account) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	client := uptime_robot.New()
+	if p.Client == nil {
+		fmt.Fprintf(os.Stderr, "No API client found")
+		return subcommands.ExitFailure
+	}
 
-	account, err := client.GetAccountDetails()
+	account, err := p.Client.GetAccountDetails()
 	if (err != nil) {
 		fmt.Fprintf(os.Stderr, "Could not get account details: %s\n", err)
 		return subcommands.ExitFailure
