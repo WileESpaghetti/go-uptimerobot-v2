@@ -20,6 +20,7 @@ func main() {
 	subcommands.Register(subcommands.FlagsCommand(), "")
 	subcommands.Register(subcommands.CommandsCommand(), "")
 	subcommands.Register(&commands.Account{Client: client}, "")
+	subcommands.Register(&commands.Monitors{Client: client}, "")
 
 	flag.Parse()
 

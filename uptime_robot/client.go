@@ -66,3 +66,29 @@ func (c *Client) GetAccountDetails() (*models.Account, error) {
 
 	return &accountDetailsResponse.Account, err
 }
+
+func (c *Client) GetMonitors() (*[]models.Monitor, error) {
+	getMonitorsRequest, err := c.NewRequest("getMonitors")
+	if err != nil {
+		return nil, err
+	}
+
+	r, err := c.HttpClient.Do(getMonitorsRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	defer r.Body.Close()
+	getMonitorsResponse := &api.GetMonitors{}
+
+	err = json.NewDecoder(r.Body).Decode(getMonitorsResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	if getMonitorsResponse.Stat == api.StatFail {
+		return nil, getMonitorsResponse.Error
+	}
+
+	return &getMonitorsResponse.Monitors, err
+}
