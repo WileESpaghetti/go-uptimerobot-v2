@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
 	"github.com/gorilla/schema"
 	"reflect"
@@ -14,14 +13,28 @@ type GetMonitors struct {
 	Monitors []models.Monitor `json:"monitors,omitempty"`
 }
 
-type GetMonitorsQuery struct {
+type GetMonitorsRequest struct {
 	Monitors []models.Monitor `schema:"monitors,omitempty"`
 }
 
-func (m GetMonitorsQuery) RegisterEncoders(e *schema.Encoder) {
+type GetMonitorsOptions struct {
+	all_time_uptime_ratio     bool //   "all_time_uptime_ratio": "97.890"
+	all_time_uptime_durations bool
+	logs                      bool
+	response_times            bool
+	alert_contacts            bool
+	mwindows                  bool
+	ssl                       bool
+	custom_http_statuses      bool
+	timezone                  bool
+}
+
+func (m GetMonitorsRequest) RegisterEncoders(e *schema.Encoder) {
 	e.RegisterEncoder(m.Monitors, MonitorsSchemaEncoder)
 }
 
+// TODO dedup monitors
+// TODO may be able to replace this with unmarshalText
 func MonitorsSchemaEncoder(v reflect.Value) string {
 	var ids []string
 
@@ -33,7 +46,6 @@ func MonitorsSchemaEncoder(v reflect.Value) string {
 	}
 
 	combined := strings.Join(ids, "-")
-	fmt.Println(combined)
 
 	return combined
 }

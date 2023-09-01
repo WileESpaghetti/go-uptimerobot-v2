@@ -2,9 +2,14 @@ package models
 
 import (
 	"encoding/json"
+	"errors"
 	"net/url"
+	"strconv"
+	"strings"
 	"time"
 )
+
+type Monitors []Monitor
 
 // FIXME CreateDatetime not in API docs. need to send email
 type Monitor struct {
@@ -31,10 +36,45 @@ type JsonMonitor struct {
 	CreateDatetime int64  `schema:"create_datetime" json:"create_datetime"`
 }
 
+func (m *Monitors) String() string {
+	// TODO have a type for structs that reduce to `-` separated data
+	var ids []string
+
+	for _, monitor := range *m {
+		id := strconv.Itoa(monitor.Id)
+		ids = append(ids, id)
+	}
+
+	combined := strings.Join(ids, "-")
+
+	return combined
+}
+
+// TODO need to be for []Monitor and parse #-#-# format instead
+// needed to be used as flag value
+func (m *Monitors) Set(s string) error {
+	ids := strings.Split(s, "-")
+
+	for _, idStr := range ids {
+		id, err := strconv.ParseInt(idStr, 10, 0) // TODO extract ID validation for reuse
+		if err != nil {
+			return errors.New("invalid ID format")
+		}
+
+		*m = append(*m, Monitor{Id: int(id)})
+	}
+
+	return nil
+}
+
+func (m *Monitor) String() string {
+	return strconv.Itoa(m.Id)
+}
+
 func (jm JsonMonitor) ToMonitor() Monitor {
 	parsedUrl, err := url.Parse(jm.Url)
 	if err != nil {
-		// FICME handle url eoncoding error. Dashboard does some frontend validation, but need to check if API also validates
+		// FIXME handle url eoncoding error. Dashboard does some frontend validation, but need to check if API also validates
 	}
 
 	return Monitor{

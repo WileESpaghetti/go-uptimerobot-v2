@@ -5,13 +5,16 @@ import (
 	"flag"
 	"fmt"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
 	"github.com/google/subcommands"
 	"os"
 	"text/tabwriter"
 )
 
 type Monitors struct {
-	Client *uptime_robot.Client
+	Client   *uptime_robot.Client
+	monitors models.Monitors
 }
 
 func (*Monitors) Name() string     { return "monitors" }
@@ -23,6 +26,7 @@ func (*Monitors) Usage() string {
 }
 
 func (p *Monitors) SetFlags(f *flag.FlagSet) {
+	f.Var(&p.monitors, "monitor", "Monitor ID")
 }
 
 func (p *Monitors) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
@@ -31,7 +35,13 @@ func (p *Monitors) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{})
 		return subcommands.ExitFailure
 	}
 
-	monitors, err := p.Client.GetMonitors()
+	var query *api.GetMonitorsRequest
+	if len(p.monitors) > 0 {
+		query = &api.GetMonitorsRequest{Monitors: p.monitors}
+	}
+	//fmt.Println("query: ", query)
+
+	monitors, err := p.Client.GetMonitors(query)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "Could not get monitor details: %s\n", err)
 		return subcommands.ExitFailure
