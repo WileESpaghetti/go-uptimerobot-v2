@@ -24,7 +24,7 @@ type Client struct {
 	HttpClient *http.Client `schema:"-"`
 }
 
-func New(apiKey string) *Client {
+func NewClient(apiKey string) *Client {
 	return &Client{ApiKey: apiKey,
 		Url:        baseUrl,
 		UserAgent:  userAgent,
