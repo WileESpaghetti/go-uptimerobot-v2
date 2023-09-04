@@ -11,11 +11,8 @@ import (
 	"time"
 )
 
-type Monitors []Monitor
-
-// FIXME CreateDatetime not in API docs. need to send email
 type Monitor struct {
-	Id              int                        `schema:"id,omitempty"  json:"id,omitempty"`
+	ID              int64                      `schema:"id,omitempty"  json:"id,omitempty"`
 	FriendlyName    string                     `schema:"friendly_name" json:"friendly_name"`
 	Url             *url.URL                   `schema:"-"             json:"-"`
 	Type            monitors.Type              `schema:"type"          json:"type"`
@@ -27,7 +24,7 @@ type Monitor struct {
 	HttpPassword    string                     `schema:"http_password" json:"http_password"`
 	Port            breakcircle.OptionalNumber `schema:"port"          json:"port"` // FIXME might make more sense to move the option numbers to the json version, unless we want to print out "" whenever = 0
 	Interval        int64                      `schema:"interval"      json:"interval"`
-	CreateDatetime  time.Time                  `schema:"-"             json:"-"`
+	CreateDatetime  time.Time                  `schema:"-"             json:"-"` // FIXME not in API docs. need to send email
 	KeywordCaseType monitors.KeywordCaseType   `schema:"-"             json:"keyword_case_type"`
 	Timeout         int64                      `schema:"-"             json:"timeout"`
 }
@@ -49,7 +46,7 @@ func (jm JsonMonitor) ToMonitor() Monitor {
 	}
 
 	return Monitor{
-		Id:           jm.unencodableMonitor.Id,
+		ID:           jm.unencodableMonitor.ID,
 		FriendlyName: jm.unencodableMonitor.FriendlyName,
 		Type:         jm.unencodableMonitor.Type,
 		Status:       jm.unencodableMonitor.Status,
@@ -71,7 +68,7 @@ func (jm JsonMonitor) ToMonitor() Monitor {
 }
 
 func (m *Monitor) String() string {
-	return strconv.Itoa(m.Id)
+	return strconv.FormatInt(m.ID, 10)
 }
 
 func (m *Monitor) UnmarshalJSON(data []byte) error {
@@ -86,14 +83,18 @@ func (m *Monitor) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+////////////////////////////////////////////////////////////
+
+type Monitors []Monitor
+
 func (ms Monitors) String() string {
 	// TODO have a type for structs that reduce to `-` separated data
 
-	ids := make(map[int]int, len(ms))
+	ids := make(map[int64]int64, len(ms))
 
 	var combined strings.Builder
 	for i, monitor := range ms {
-		if _, ok := ids[monitor.Id]; ok {
+		if _, ok := ids[monitor.ID]; ok {
 			continue
 		}
 
@@ -101,8 +102,8 @@ func (ms Monitors) String() string {
 			combined.WriteString("-")
 		}
 
-		ids[monitor.Id] = monitor.Id
-		id := strconv.Itoa(monitor.Id)
+		ids[monitor.ID] = monitor.ID
+		id := strconv.FormatInt(monitor.ID, 10)
 		combined.WriteString(id)
 	}
 
@@ -113,12 +114,12 @@ func (ms Monitors) UnmarshalText(text []byte) error {
 	textIDs := strings.Split(string(text), "-")
 
 	for _, sID := range textIDs {
-		id, err := strconv.ParseInt(sID, 10, 0) // TODO extract ID validation for reuse
+		id, err := strconv.ParseInt(sID, 10, 64)
 		if err != nil {
 			return errors.New("monitor ID must be an integer")
 		}
 
-		ms = append(ms, Monitor{Id: int(id)})
+		ms = append(ms, Monitor{ID: id})
 	}
 
 	return nil
