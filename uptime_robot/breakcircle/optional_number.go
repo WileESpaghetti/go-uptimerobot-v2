@@ -43,10 +43,10 @@ func (n *OptionalNumber) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (n *OptionalNumber) String() string {
-	if *n == 0 {
+func (n OptionalNumber) String() string {
+	if n == 0 {
 		return ""
 	}
 
-	return strconv.FormatInt(int64(*n), 10)
+	return strconv.FormatInt(int64(n), 10)
 }
