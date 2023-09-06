@@ -104,12 +104,12 @@ func (c *Client) GetAccountDetails() (*models.Account, error) {
 	return &env.Account, err
 }
 
-func (c *Client) GetMonitors(options *api.GetMonitorsRequest) (*models.Monitors, error) {
+func (c *Client) GetMonitors(options *api.GetMonitorsRequest) (models.Monitors, error) {
 	env := &api.GetMonitors{}
 	err := c.Get("getMonitors", env, options)
 	if err != nil {
 		return nil, err
 	}
 
-	return &env.Monitors, err
+	return env.Monitors, err
 }

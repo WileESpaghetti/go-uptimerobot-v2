@@ -88,8 +88,6 @@ func (m *Monitor) UnmarshalJSON(data []byte) error {
 type Monitors []Monitor
 
 func (ms Monitors) String() string {
-	// TODO have a type for structs that reduce to `-` separated data
-
 	ids := make(map[int64]int64, len(ms))
 
 	var combined strings.Builder
@@ -125,8 +123,7 @@ func (ms Monitors) UnmarshalText(text []byte) error {
 	return nil
 }
 
-// TODO need to be for []Monitor and parse #-#-# format instead
-// needed to be used as flag value
+// Set is used to create a list of Monitor from a dash-separated list of ID
 func (ms Monitors) Set(s string) error {
 	return ms.UnmarshalText([]byte(s))
 }

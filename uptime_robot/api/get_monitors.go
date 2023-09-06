@@ -11,7 +11,7 @@ import (
 
 type GetMonitors struct {
 	Envelope
-	Monitors models.Monitors `json:"monitors,omitempty"`
+	Monitors []models.Monitor `json:"monitors,omitempty"`
 }
 
 type GetMonitorsRequest struct {
@@ -42,7 +42,7 @@ func MonitorsSchemaEncoder(v reflect.Value) string {
 	m := v.Interface().(models.Monitors)
 
 	for _, monitor := range m {
-		id := strconv.Itoa(monitor.Id)
+		id := strconv.FormatInt(monitor.ID, 10)
 		ids = append(ids, id)
 	}
 

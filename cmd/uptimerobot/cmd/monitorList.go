@@ -5,6 +5,9 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
+	"os"
+	"text/tabwriter"
 
 	"github.com/spf13/cobra"
 )
@@ -20,7 +23,23 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("monitorList called")
+		// TODO does not handle pagination
+		fmt.Println("monitor list called")
+
+		query := api.GetMonitorsRequest{}
+
+		monitors, err := apiClient.GetMonitors(&query)
+		if err != nil {
+			_, _ = fmt.Fprintf(os.Stderr, "Could not get monitor details: %s\n", err)
+			return
+		}
+
+		w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', tabwriter.Debug)
+		_, _ = fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", "ID", "STATUS", "FRIENDLY NAME", "URL", "TYPE", "SUB TYPE", "KEYWORD TYPE", "KEYWORD", "USERNAME", "PASSWORD", "PORT", "INTERVAL", "CREATED")
+		for _, monitor := range monitors {
+			_, _ = fmt.Fprintf(w, "%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%d\t%s\n", monitor.ID, monitor.Status, monitor.FriendlyName, monitor.Url, monitor.Type, monitor.SubType, monitor.KeywordType, monitor.KeywordValue, monitor.HttpUsername, monitor.HttpPassword, monitor.Port, monitor.Interval, monitor.CreateDatetime)
+		}
+		_ = w.Flush()
 	},
 }
 
