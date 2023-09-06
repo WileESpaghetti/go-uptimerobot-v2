@@ -29,9 +29,11 @@ type Monitor struct {
 	Timeout         int64                      `schema:"-"             json:"timeout"`
 }
 
+// unencodableMonitor is used to break encoding loops for jsonMonitor
 type unencodableMonitor Monitor
 
-type JsonMonitor struct {
+// jsonMonitor is used to handle converting between API JSON responses and the more strictly-typed Monitor struct
+type jsonMonitor struct {
 	unencodableMonitor
 	Url            string                     `schema:"url"             json:"url"`
 	CreateDatetime int64                      `schema:"create_datetime" json:"create_datetime"`
@@ -39,7 +41,7 @@ type JsonMonitor struct {
 	KeywordType    breakcircle.OptionalNumber `schema:"keyword_type"  json:"keyword_type"`
 }
 
-func (jm JsonMonitor) ToMonitor() Monitor {
+func (jm jsonMonitor) Monitor() Monitor {
 	parsedUrl, err := url.Parse(jm.Url)
 	if err != nil {
 		// FIXME handle url eoncoding error. Dashboard does some frontend validation, but need to check if API also validates
@@ -72,13 +74,13 @@ func (m *Monitor) String() string {
 }
 
 func (m *Monitor) UnmarshalJSON(data []byte) error {
-	var jm JsonMonitor
+	var jm jsonMonitor
 
 	if err := json.Unmarshal(data, &jm); err != nil {
 		return err
 	}
 
-	*m = jm.ToMonitor()
+	*m = jm.Monitor()
 
 	return nil
 }
