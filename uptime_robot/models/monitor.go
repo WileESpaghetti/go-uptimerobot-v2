@@ -22,7 +22,7 @@ type Monitor struct {
 	KeywordValue    string                     `schema:"keyword_value" json:"keyword_value"`
 	HttpUsername    string                     `schema:"http_username" json:"http_username"`
 	HttpPassword    string                     `schema:"http_password" json:"http_password"`
-	Port            breakcircle.OptionalNumber `schema:"port"          json:"port"` // FIXME might make more sense to move the option numbers to the json version, unless we want to print out "" whenever = 0
+	Port            breakcircle.OptionalNumber `schema:"port"          json:"port"`
 	Interval        int64                      `schema:"interval"      json:"interval"`
 	CreateDatetime  time.Time                  `schema:"-"             json:"-"` // FIXME not in API docs. need to send email
 	KeywordCaseType monitors.KeywordCaseType   `schema:"-"             json:"keyword_case_type"`
@@ -110,7 +110,7 @@ func (ms Monitors) String() string {
 	return combined.String()
 }
 
-func (ms Monitors) UnmarshalText(text []byte) error {
+func (ms *Monitors) UnmarshalText(text []byte) error {
 	textIDs := strings.Split(string(text), "-")
 
 	for _, sID := range textIDs {
@@ -119,13 +119,13 @@ func (ms Monitors) UnmarshalText(text []byte) error {
 			return errors.New("monitor ID must be an integer")
 		}
 
-		ms = append(ms, Monitor{ID: id})
+		*ms = append(*ms, Monitor{ID: id})
 	}
 
 	return nil
 }
 
 // Set is used to create a list of Monitor from a dash-separated list of ID
-func (ms Monitors) Set(s string) error {
+func (ms *Monitors) Set(s string) error {
 	return ms.UnmarshalText([]byte(s))
 }

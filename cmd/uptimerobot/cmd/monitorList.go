@@ -6,7 +6,9 @@ package cmd
 import (
 	"fmt"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
 	"os"
+	"strings"
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
@@ -26,7 +28,20 @@ to quickly create a Cobra application.`,
 		// TODO does not handle pagination
 		fmt.Println("monitor list called")
 
+		monitorStr := strings.Join(args, "-")
+
+		ms := &models.Monitors{}
+		if len(args) > 0 {
+			if err := ms.Set(monitorStr); err != nil {
+				_, _ = fmt.Fprintf(os.Stderr, "could not get monitor list\n")
+				return
+			}
+		}
+
 		query := api.GetMonitorsRequest{}
+		if len(*ms) > 0 {
+			query.Monitors = *ms
+		}
 
 		monitors, err := apiClient.GetMonitors(&query)
 		if err != nil {
