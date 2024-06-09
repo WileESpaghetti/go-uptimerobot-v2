@@ -3,30 +3,31 @@ package models
 import (
 	"encoding/json"
 	"errors"
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/breakcircle"
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/breakcircle"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
 )
 
 type Monitor struct {
-	ID              int64                      `schema:"id,omitempty"  json:"id,omitempty"`
-	FriendlyName    string                     `schema:"friendly_name" json:"friendly_name"`
-	Url             *url.URL                   `schema:"-"             json:"-"`
-	Type            monitors.Type              `schema:"type"          json:"type"`
-	Status          monitors.Status            `schema:"status"        json:"status"`
-	SubType         monitors.SubType           `schema:"sub_type"      json:"sub_type"`
-	KeywordType     monitors.KeywordType       `schema:"keyword_type"  json:"keyword_type"`
-	KeywordValue    string                     `schema:"keyword_value" json:"keyword_value"`
-	HttpUsername    string                     `schema:"http_username" json:"http_username"`
-	HttpPassword    string                     `schema:"http_password" json:"http_password"`
-	Port            breakcircle.OptionalNumber `schema:"port"          json:"port"`
-	Interval        int64                      `schema:"interval"      json:"interval"`
-	CreateDatetime  time.Time                  `schema:"-"             json:"-"` // FIXME not in API docs. need to send email
-	KeywordCaseType monitors.KeywordCaseType   `schema:"-"             json:"keyword_case_type"`
-	Timeout         int64                      `schema:"-"             json:"timeout"`
+	ID              int64                      `form:"id,omitempty"  json:"id,omitempty"`
+	FriendlyName    string                     `form:"friendly_name" json:"friendly_name"`
+	Url             *url.URL                   `form:"-"             json:"-"`
+	Type            monitors.Type              `form:"type"          json:"type"`
+	Status          monitors.Status            `form:"status"        json:"status"`
+	SubType         monitors.SubType           `form:"sub_type"      json:"sub_type"`
+	KeywordType     monitors.KeywordType       `form:"keyword_type"  json:"keyword_type"`
+	KeywordValue    string                     `form:"keyword_value" json:"keyword_value"`
+	HttpUsername    string                     `form:"http_username" json:"http_username"`
+	HttpPassword    string                     `form:"http_password" json:"http_password"`
+	Port            breakcircle.OptionalNumber `form:"port"          json:"port"`
+	Interval        int64                      `form:"interval"      json:"interval"`
+	CreateDatetime  time.Time                  `form:"-"             json:"-"` // FIXME not in API docs. need to send email
+	KeywordCaseType monitors.KeywordCaseType   `form:"-"             json:"keyword_case_type"`
+	Timeout         int64                      `form:"-"             json:"timeout"`
 }
 
 // unencodableMonitor is used to break encoding loops for jsonMonitor
@@ -35,10 +36,10 @@ type unencodableMonitor Monitor
 // jsonMonitor is used to handle converting between API JSON responses and the more strictly-typed Monitor struct
 type jsonMonitor struct {
 	unencodableMonitor
-	Url            string                     `schema:"url"             json:"url"`
-	CreateDatetime int64                      `schema:"create_datetime" json:"create_datetime"`
-	SubType        breakcircle.OptionalNumber `schema:"sub_type"      json:"sub_type"`
-	KeywordType    breakcircle.OptionalNumber `schema:"keyword_type"  json:"keyword_type"`
+	Url            string                     `form:"url"             json:"url"`
+	CreateDatetime int64                      `form:"create_datetime" json:"create_datetime"`
+	SubType        breakcircle.OptionalNumber `form:"sub_type"        json:"sub_type"`
+	KeywordType    breakcircle.OptionalNumber `form:"keyword_type"    json:"keyword_type"`
 }
 
 func (jm jsonMonitor) Monitor() Monitor {
@@ -108,6 +109,21 @@ func (ms Monitors) String() string {
 	}
 
 	return combined.String()
+}
+
+func (ms *Monitors) MarshalText() ([]byte, error) {
+	// FIXME not sure which is faster this or strings.builder
+	//return []byte(ms.String()), nil
+	var ids []string
+
+	for _, monitor := range *ms {
+		id := strconv.FormatInt(monitor.ID, 10)
+		ids = append(ids, id)
+	}
+
+	combined := strings.Join(ids, "-")
+
+	return []byte(combined), nil
 }
 
 func (ms *Monitors) UnmarshalText(text []byte) error {

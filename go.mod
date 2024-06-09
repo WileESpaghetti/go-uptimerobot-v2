@@ -3,8 +3,8 @@ module github.com/WileESpaghetti/go-uptimerobot-v2
 go 1.21
 
 require (
+	github.com/ajg/form v1.5.1
 	github.com/go-test/deep v1.1.0
-	github.com/gorilla/schema v1.2.0
 	github.com/spf13/cobra v1.7.0
 )
 
