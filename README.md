@@ -20,5 +20,6 @@ go build -o uptimerobot cmd/uptimerobot/main.go
 
 ### Implemented groups
 * account - displays account information
+* monitors
 * help
 * other cobra built-ins

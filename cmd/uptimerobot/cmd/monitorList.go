@@ -4,14 +4,19 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
+	"github.com/spf13/cobra"
+	"io"
+)
+
+import (
 	"fmt"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
 	"os"
 	"strings"
 	"text/tabwriter"
-
-	"github.com/spf13/cobra"
 )
 
 // monitorListCmd represents the monitorList command
@@ -24,50 +29,46 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		// TODO does not handle pagination
-		fmt.Println("monitor list called")
-
-		monitorStr := strings.Join(args, "-")
-
-		ms := &models.Monitors{}
-		if len(args) > 0 {
-			if err := ms.Set(monitorStr); err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "could not get monitor list\n")
-				return
-			}
-		}
-
-		query := api.GetMonitorsRequest{}
-		if len(*ms) > 0 {
-			query.Monitors = *ms
-		}
-
-		monitors, err := apiClient.GetMonitors(&query)
-		if err != nil {
-			_, _ = fmt.Fprintf(os.Stderr, "Could not get monitor details: %s\n", err)
-			return
-		}
-
-		w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', tabwriter.Debug)
-		_, _ = fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", "ID", "STATUS", "FRIENDLY NAME", "URL", "TYPE", "SUB TYPE", "KEYWORD TYPE", "KEYWORD", "USERNAME", "PASSWORD", "PORT", "INTERVAL", "CREATED")
-		for _, monitor := range monitors {
-			_, _ = fmt.Fprintf(w, "%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%d\t%s\n", monitor.ID, monitor.Status, monitor.FriendlyName, monitor.Url, monitor.Type, monitor.SubType, monitor.KeywordType, monitor.KeywordValue, monitor.HttpUsername, monitor.HttpPassword, monitor.Port, monitor.Interval, monitor.CreateDatetime)
-		}
-		_ = w.Flush()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return MonitorListAction(os.Stdout, apiClient, monitorTypes, args)
 	},
 }
+
+var monitorTypes monitors.Types
 
 func init() {
 	monitorCmd.AddCommand(monitorListCmd)
 
-	// Here you will define your flags and configuration settings.
+	monitorListCmd.Flags().VarP(newMonitorTypesFlag(monitors.Types{}, &monitorTypes), "type", "t", "Monitor types: 1 - HTTP(s), 2 - Keyword, 3 - Ping, 4 - Port, 5 - Heartbeat")
+}
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// monitorListCmd.PersistentFlags().String("foo", "", "A help for foo")
+const errBadMonitorListFormat = "could not get monitor list: %w"
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// monitorListCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+func MonitorListAction(out io.Writer, apiClient *uptime_robot.Client, types monitors.Types, args []string) error {
+	ms := &models.Monitors{}
+	if len(args) > 0 {
+		monitorStr := strings.Join(args, "-")
+		if err := ms.Set(monitorStr); err != nil {
+			return fmt.Errorf(errBadMonitorListFormat, err)
+		}
+	}
+
+	options := make([]api.MonitorOptions, 0, 2) // number of flags in the command
+	options = append(options,
+		api.WithMonitors(*ms),
+		api.WithTypes(types))
+
+	// TODO does not handle pagination
+	getMonitorResults, err := apiClient.GetMonitors(options...)
+	if err != nil {
+		return err
+	}
+
+	w := tabwriter.NewWriter(out, 0, 0, 2, ' ', tabwriter.Debug)
+	_, _ = fmt.Fprintln(w, strings.Join([]string{"ID", "STATUS", "FRIENDLY NAME", "URL", "TYPE", "SUB TYPE", "KEYWORD TYPE", "KEYWORD", "USERNAME", "PASSWORD", "PORT", "INTERVAL", "CREATED"}, "\t"))
+	for _, monitor := range getMonitorResults {
+		_, _ = fmt.Fprintf(w, "%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%d\t%s\n", monitor.ID, monitor.Status, monitor.FriendlyName, monitor.Url, monitor.Type, monitor.SubType, monitor.KeywordType, monitor.KeywordValue, monitor.HttpUsername, monitor.HttpPassword, monitor.Port, monitor.Interval, monitor.CreateDatetime)
+	}
+	_ = w.Flush()
+	return nil
 }
