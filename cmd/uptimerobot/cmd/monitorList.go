@@ -30,21 +30,23 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return MonitorListAction(os.Stdout, apiClient, monitorTypes, args)
+		return MonitorListAction(os.Stdout, apiClient, monitorTypes, monitorStatuses, args)
 	},
 }
 
 var monitorTypes monitors.Types
+var monitorStatuses monitors.Statuses
 
 func init() {
 	monitorCmd.AddCommand(monitorListCmd)
 
 	monitorListCmd.Flags().VarP(newMonitorTypesFlag(monitors.Types{}, &monitorTypes), "type", "t", "Monitor types: 1 - HTTP(s), 2 - Keyword, 3 - Ping, 4 - Port, 5 - Heartbeat")
+	monitorListCmd.Flags().VarP(newMonitorStatusesFlag(monitors.Statuses{}, &monitorStatuses), "status", "s", "Monitor Statuses: 0 - Paused, 1 - Not Checked, 2 - Up, 8 - Seems Down, 9 - Down")
 }
 
 const errBadMonitorListFormat = "could not get monitor list: %w"
 
-func MonitorListAction(out io.Writer, apiClient *uptime_robot.Client, types monitors.Types, args []string) error {
+func MonitorListAction(out io.Writer, apiClient *uptime_robot.Client, types monitors.Types, statuses monitors.Statuses, args []string) error {
 	ms := &models.Monitors{}
 	if len(args) > 0 {
 		monitorStr := strings.Join(args, "-")
@@ -56,7 +58,8 @@ func MonitorListAction(out io.Writer, apiClient *uptime_robot.Client, types moni
 	options := make([]api.MonitorOptions, 0, 2) // number of flags in the command
 	options = append(options,
 		api.WithMonitors(*ms),
-		api.WithTypes(types))
+		api.WithTypes(types),
+		api.WithStatuses(statuses))
 
 	// TODO does not handle pagination
 	getMonitorResults, err := apiClient.GetMonitors(options...)

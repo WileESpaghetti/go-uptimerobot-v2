@@ -11,8 +11,9 @@ type GetMonitors struct {
 }
 
 type GetMonitorsRequest struct {
-	Monitors models.Monitors `form:"monitors,omitempty"`
-	Types    monitors.Types  `form:"types,omitempty"`
+	Monitors models.Monitors   `form:"monitors,omitempty"`
+	Types    monitors.Types    `form:"types,omitempty"`
+	Statuses monitors.Statuses `form:"statuses,omitempty"`
 }
 
 type GetMonitorsOptions struct {
@@ -44,5 +45,11 @@ func WithMonitors(monitors models.Monitors) MonitorOptions {
 func WithTypes(types monitors.Types) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.Types = types
+	}
+}
+
+func WithStatuses(statuses monitors.Statuses) MonitorOptions {
+	return func(options *GetMonitorsRequest) {
+		options.Statuses = statuses
 	}
 }
