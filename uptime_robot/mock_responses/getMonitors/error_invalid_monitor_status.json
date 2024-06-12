@@ -1,0 +1,9 @@
+{
+  "stat": "fail",
+  "error": {
+    "type": "invalid_parameter",
+    "parameter_name": "statuses",
+    "passed_value": "7",
+    "message": "each value in statuses must be one of the following values: 0,1,2,8,9"
+  }
+}
