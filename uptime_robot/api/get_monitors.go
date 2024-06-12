@@ -1,9 +1,8 @@
 package api
 
 import (
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
-
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
 )
 
 type GetMonitors struct {
@@ -12,8 +11,8 @@ type GetMonitors struct {
 }
 
 type GetMonitorsRequest struct {
-	Monitors models.Monitors `schema:"monitors,omitempty"`
 	Monitors models.Monitors `form:"monitors,omitempty"`
+	Types    monitors.Types  `form:"types,omitempty"`
 }
 
 type GetMonitorsOptions struct {
@@ -26,4 +25,24 @@ type GetMonitorsOptions struct {
 	ssl                       bool
 	custom_http_statuses      bool
 	timezone                  bool
+}
+
+type MonitorOptions func(*GetMonitorsRequest)
+
+func WithOptions(getMonitorsRequest *GetMonitorsRequest) MonitorOptions {
+	return func(options *GetMonitorsRequest) {
+		*options = *getMonitorsRequest
+	}
+}
+
+func WithMonitors(monitors models.Monitors) MonitorOptions {
+	return func(options *GetMonitorsRequest) {
+		options.Monitors = monitors
+	}
+}
+
+func WithTypes(types monitors.Types) MonitorOptions {
+	return func(options *GetMonitorsRequest) {
+		options.Types = types
+	}
 }

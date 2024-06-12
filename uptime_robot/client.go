@@ -43,9 +43,10 @@ func (c *Client) NewRequest(apiMethod string, options interface{}) (*http.Reques
 		}
 		postData = optionsData
 	}
-
 	postData.Set("api_key", c.ApiKey)
+
 	encodedForm := strings.NewReader(postData.Encode())
+
 	req, err := http.NewRequest(http.MethodPost, endpoint, encodedForm)
 	if err != nil {
 		return nil, err
@@ -93,9 +94,15 @@ func (c *Client) GetAccountDetails() (*models.Account, error) {
 	return &env.Account, err
 }
 
-func (c *Client) GetMonitors(options *api.GetMonitorsRequest) (models.Monitors, error) {
+func (c *Client) GetMonitors(options ...api.MonitorOptions) (models.Monitors, error) {
 	env := &api.GetMonitors{}
-	err := c.Get("getMonitors", env, options)
+
+	params := &api.GetMonitorsRequest{}
+	for _, o := range options {
+		o(params)
+	}
+
+	err := c.Get("getMonitors", env, params)
 	if err != nil {
 		return nil, err
 	}
