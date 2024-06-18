@@ -1,4 +1,4 @@
-package breakcircle
+package numbers
 
 import (
 	"encoding/json"
@@ -15,7 +15,7 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 	// TODO test floating point number (all zeros
 	tests := map[string]struct {
 		in           string
-		want         OptionalNumber
+		want         Optional
 		wantErr      bool
 		hasNumberErr bool
 		hasIntErr    bool
@@ -23,7 +23,7 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 	}{
 		"empty string (double quotes)": {
 			in:           "\"\"",
-			want:         OptionalNumber(0),
+			want:         Optional(0),
 			wantErr:      false,
 			hasNumberErr: true,
 			hasIntErr:    true,
@@ -32,7 +32,7 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 		//"empty string (single quotes)": {
 		// single quotes are not valid JSON
 		//	in:           "''",
-		//	want:         OptionalNumber(0),
+		//	want:         Optional(0),
 		//	wantErr:      true,
 		//	hasNumberErr: true,
 		//	hasIntErr:    true,
@@ -40,7 +40,7 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 		//},
 		"no input": {
 			in:           "", // empty string is considered invalid JSON by the encoder
-			want:         OptionalNumber(0),
+			want:         Optional(0),
 			wantErr:      true,
 			hasNumberErr: true,
 			hasIntErr:    true,
@@ -48,7 +48,7 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 		},
 		"null": {
 			in:           "null",
-			want:         OptionalNumber(0),
+			want:         Optional(0),
 			wantErr:      false,
 			hasNumberErr: false,
 			hasIntErr:    false,
@@ -56,7 +56,7 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 		},
 		"0": {
 			in:           "0",
-			want:         OptionalNumber(0),
+			want:         Optional(0),
 			wantErr:      false,
 			hasNumberErr: false,
 			hasIntErr:    false,
@@ -64,7 +64,7 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 		},
 		"0 (quoted)": {
 			in:           "\"0\"",
-			want:         OptionalNumber(0),
+			want:         Optional(0),
 			wantErr:      false,
 			hasNumberErr: false,
 			hasIntErr:    true,
@@ -72,7 +72,7 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 		},
 		"1337": {
 			in:           "1337",
-			want:         OptionalNumber(1337),
+			want:         Optional(1337),
 			wantErr:      false,
 			hasNumberErr: false,
 			hasIntErr:    false,
@@ -80,7 +80,7 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 		},
 		"1337 (quoted)": {
 			in:           "\"1337\"",
-			want:         OptionalNumber(1337),
+			want:         Optional(1337),
 			wantErr:      false,
 			hasNumberErr: false,
 			hasIntErr:    true,
@@ -88,7 +88,7 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 		},
 		"-42": {
 			in:           "-42",
-			want:         OptionalNumber(-42),
+			want:         Optional(-42),
 			wantErr:      false,
 			hasNumberErr: false,
 			hasIntErr:    false,
@@ -96,7 +96,7 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 		},
 		"-42 (quoted)": {
 			in:           "\"-42\"",
-			want:         OptionalNumber(-42),
+			want:         Optional(-42),
 			wantErr:      false,
 			hasNumberErr: false,
 			hasIntErr:    true,
@@ -104,7 +104,7 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 		},
 		"string": {
 			in:           "\"1h3ll0 w0rld\"",
-			want:         OptionalNumber(0),
+			want:         Optional(0),
 			wantErr:      true,
 			hasNumberErr: true,
 			hasIntErr:    true,
@@ -114,11 +114,11 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			var got OptionalNumber
+			var got Optional
 			err := json.Unmarshal([]byte(test.in), &got)
 			gotErr := err != nil
 			if test.wantErr != gotErr {
-				t.Errorf("encoding OptionalNumber: wanted %t, got %t", test.wantErr, gotErr)
+				t.Errorf("encoding Optional: wanted %t, got %t", test.wantErr, gotErr)
 			}
 
 			var gotNumber json.Number
