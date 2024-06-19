@@ -74,15 +74,15 @@ func main() {
 - [X] all_time_uptime_ratio
 - [ ] all_time_uptime_durations
 - [ ] logs
-- [ ] logs_start_date
-- [ ] logs_end_date
-- [ ] log_types
-- [ ] logs_limit
+  - [ ] logs_start_date
+  - [ ] logs_end_date
+  - [ ] log_types
+  - [ ] logs_limit
 - [ ] response_times
-- [ ] response_times_limit
-- [ ] response_times_average
-- [ ] response_times_start_date
-- [ ] response_times_end_date
+  - [ ] response_times_limit
+  - [ ] response_times_average
+  - [ ] response_times_start_date
+  - [ ] response_times_end_date
 - [ ] alert_contacts
 - [ ] mwindows
 - [ ] ssl
