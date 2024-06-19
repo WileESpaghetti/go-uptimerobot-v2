@@ -13,21 +13,22 @@ import (
 )
 
 type Monitor struct {
-	ID              int64                    `form:"id,omitempty"  json:"id,omitempty"`
-	FriendlyName    string                   `form:"friendly_name" json:"friendly_name"`
-	Url             *url.URL                 `form:"-"             json:"-"`
-	Type            monitors.Type            `form:"type"          json:"type"`
-	Status          monitors.Status          `form:"status"        json:"status"`
-	SubType         monitors.SubType         `form:"sub_type"      json:"sub_type"`
-	KeywordType     monitors.KeywordType     `form:"keyword_type"  json:"keyword_type"`
-	KeywordValue    string                   `form:"keyword_value" json:"keyword_value"`
-	HttpUsername    string                   `form:"http_username" json:"http_username"`
-	HttpPassword    string                   `form:"http_password" json:"http_password"`
-	Port            numbers.Optional         `form:"port"          json:"port"`
-	Interval        int64                    `form:"interval"      json:"interval"`
-	CreateDatetime  time.Time                `form:"-"             json:"-"` // FIXME not in API docs. need to send email
-	KeywordCaseType monitors.KeywordCaseType `form:"-"             json:"keyword_case_type"`
-	Timeout         int64                    `form:"-"             json:"timeout"`
+	ID                 int64                    `form:"id,omitempty"  json:"id,omitempty"`
+	FriendlyName       string                   `form:"friendly_name" json:"friendly_name"`
+	Url                *url.URL                 `form:"-"             json:"-"`
+	Type               monitors.Type            `form:"type"          json:"type"`
+	Status             monitors.Status          `form:"status"        json:"status"`
+	SubType            monitors.SubType         `form:"sub_type"      json:"sub_type"`
+	KeywordType        monitors.KeywordType     `form:"keyword_type"  json:"keyword_type"`
+	KeywordValue       string                   `form:"keyword_value" json:"keyword_value"`
+	HttpUsername       string                   `form:"http_username" json:"http_username"`
+	HttpPassword       string                   `form:"http_password" json:"http_password"`
+	Port               numbers.Optional         `form:"port"          json:"port"`
+	Interval           int64                    `form:"interval"      json:"interval"`
+	CreateDatetime     time.Time                `form:"-"             json:"-"` // FIXME not in API docs. need to send email
+	KeywordCaseType    monitors.KeywordCaseType `form:"-"             json:"keyword_case_type"`
+	Timeout            int64                    `form:"-"             json:"timeout"`
+	AllTimeUptimeRatio *float64                 `form:"-"             json:"all_time_uptime_ratio"`
 }
 
 // unencodableMonitor is used to break encoding loops for jsonMonitor
@@ -36,10 +37,11 @@ type unencodableMonitor Monitor
 // jsonMonitor is used to handle converting between API JSON responses and the more strictly-typed Monitor struct
 type jsonMonitor struct {
 	unencodableMonitor
-	Url            string           `form:"url"             json:"url"`
-	CreateDatetime int64            `form:"create_datetime" json:"create_datetime"`
-	SubType        numbers.Optional `form:"sub_type"        json:"sub_type"`
-	KeywordType    numbers.Optional `form:"keyword_type"    json:"keyword_type"`
+	Url                string           `form:"url"                   json:"url"`
+	CreateDatetime     int64            `form:"create_datetime"       json:"create_datetime"`
+	SubType            numbers.Optional `form:"sub_type"              json:"sub_type"`
+	KeywordType        numbers.Optional `form:"keyword_type"          json:"keyword_type"`
+	AllTimeUptimeRatio json.Number      `form:"all_time_uptime_ratio" json:"all_time_uptime_ratio"`
 }
 
 func (jm jsonMonitor) Monitor() Monitor {
@@ -48,18 +50,24 @@ func (jm jsonMonitor) Monitor() Monitor {
 		// FIXME handle url eoncoding error. Dashboard does some frontend validation, but need to check if API also validates
 	}
 
-	return Monitor{
-		ID:           jm.unencodableMonitor.ID,
-		FriendlyName: jm.unencodableMonitor.FriendlyName,
-		Type:         jm.unencodableMonitor.Type,
-		Status:       jm.unencodableMonitor.Status,
-		SubType:      jm.unencodableMonitor.SubType,
-		KeywordType:  jm.unencodableMonitor.KeywordType,
-		KeywordValue: jm.unencodableMonitor.KeywordValue,
-		HttpUsername: jm.unencodableMonitor.HttpUsername,
-		HttpPassword: jm.unencodableMonitor.HttpPassword,
-		Port:         jm.unencodableMonitor.Port,
-		Interval:     jm.unencodableMonitor.Interval,
+	var allTimeUptimeRatio *float64
+	if ratio, err := jm.AllTimeUptimeRatio.Float64(); err == nil {
+		allTimeUptimeRatio = &ratio
+	}
+
+	return Monitor{ // FIXME might need just use jm.$field instead of the unencodable version. ex SubType/Keyword type might be currently ignored because of this
+		ID:                 jm.unencodableMonitor.ID,
+		FriendlyName:       jm.unencodableMonitor.FriendlyName,
+		Type:               jm.unencodableMonitor.Type,
+		Status:             jm.unencodableMonitor.Status,
+		SubType:            jm.unencodableMonitor.SubType,
+		KeywordType:        jm.unencodableMonitor.KeywordType,
+		KeywordValue:       jm.unencodableMonitor.KeywordValue,
+		HttpUsername:       jm.unencodableMonitor.HttpUsername,
+		HttpPassword:       jm.unencodableMonitor.HttpPassword,
+		Port:               jm.unencodableMonitor.Port,
+		Interval:           jm.unencodableMonitor.Interval,
+		AllTimeUptimeRatio: allTimeUptimeRatio,
 
 		// This will be inaccurate for some older monitors. I'm guessing that since the `create_datetime` attribute
 		// was added to the API at a later date this results in the creation date older pre-existing monitors to
