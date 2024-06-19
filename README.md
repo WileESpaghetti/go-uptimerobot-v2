@@ -71,7 +71,7 @@ func main() {
   - does not accept hyphen as a separator yet
 - [ ] custom_down_durations
 - [ ] custom_uptime_ranges
-- [ ] all_time_uptime_ratio
+- [X] all_time_uptime_ratio
 - [ ] all_time_uptime_durations
 - [ ] logs
 - [ ] logs_start_date

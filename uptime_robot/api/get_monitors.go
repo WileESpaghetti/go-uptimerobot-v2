@@ -11,10 +11,11 @@ type GetMonitors struct {
 }
 
 type GetMonitorsRequest struct {
-	Monitors     models.Monitors   `form:"monitors,omitempty"`
-	Types        monitors.Types    `form:"types,omitempty"`
-	Statuses     monitors.Statuses `form:"statuses,omitempty"`
-	UptimeRatios []int64           `form:"custom_uptime_ratios,omitempty"` // days
+	Monitors              models.Monitors   `form:"monitors,omitempty"`
+	Types                 monitors.Types    `form:"types,omitempty"`
+	Statuses              monitors.Statuses `form:"statuses,omitempty"`
+	UptimeRatios          []int64           `form:"custom_uptime_ratios,omitempty"` // days
+	HasAllTimeUptimeRatio bool              `form:"all_time_uptime_ratio,omitempty"`
 }
 
 type GetMonitorsOptions struct {
@@ -27,7 +28,7 @@ type GetMonitorsOptions struct {
 	ssl                       bool
 	custom_http_statuses      bool
 	timezone                  bool
-	//custom_down_durations // doesn't appear to de anything or give an invalid parameter error. need to file docs correction
+	//custom_down_durations // only accepted values are 0 or 1, but doesn't appear to do anything or give an invalid parameter error. need to file docs correction
 }
 
 type MonitorOptions func(*GetMonitorsRequest)
@@ -59,5 +60,11 @@ func WithStatuses(statuses monitors.Statuses) MonitorOptions {
 func WithUptimeRatios(uptimeRatios []int64) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.UptimeRatios = uptimeRatios
+	}
+}
+
+func WithAllTimeUptimeRatio(shouldInclude bool) MonitorOptions {
+	return func(options *GetMonitorsRequest) {
+		options.HasAllTimeUptimeRatio = shouldInclude
 	}
 }
