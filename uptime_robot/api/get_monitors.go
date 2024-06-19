@@ -11,9 +11,10 @@ type GetMonitors struct {
 }
 
 type GetMonitorsRequest struct {
-	Monitors models.Monitors   `form:"monitors,omitempty"`
-	Types    monitors.Types    `form:"types,omitempty"`
-	Statuses monitors.Statuses `form:"statuses,omitempty"`
+	Monitors     models.Monitors   `form:"monitors,omitempty"`
+	Types        monitors.Types    `form:"types,omitempty"`
+	Statuses     monitors.Statuses `form:"statuses,omitempty"`
+	UptimeRatios []int64           `form:"custom_uptime_ratios,omitempty"` // days
 }
 
 type GetMonitorsOptions struct {
@@ -26,6 +27,7 @@ type GetMonitorsOptions struct {
 	ssl                       bool
 	custom_http_statuses      bool
 	timezone                  bool
+	//custom_down_durations // doesn't appear to de anything or give an invalid parameter error. need to file docs correction
 }
 
 type MonitorOptions func(*GetMonitorsRequest)
@@ -51,5 +53,11 @@ func WithTypes(types monitors.Types) MonitorOptions {
 func WithStatuses(statuses monitors.Statuses) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.Statuses = statuses
+	}
+}
+
+func WithUptimeRatios(uptimeRatios []int64) MonitorOptions {
+	return func(options *GetMonitorsRequest) {
+		options.UptimeRatios = uptimeRatios
 	}
 }

@@ -67,7 +67,8 @@ func main() {
 - [X] monitors
 - [X] types
 - [X] statuses
-- [ ] custom_uptime_ratios
+- [X] custom_uptime_ratios
+  - does not accept hyphen as a separator yet
 - [ ] custom_down_durations
 - [ ] custom_uptime_ranges
 - [ ] all_time_uptime_ratio
