@@ -25,6 +25,7 @@ type Client struct {
 	HttpClient *http.Client `form:"-"`
 }
 
+type Envelope = api.Envelope
 func NewClient(apiKey string) *Client {
 	return &Client{ApiKey: apiKey,
 		Url:        baseUrl,
@@ -75,7 +76,7 @@ func (c *Client) Get(method string, response interface{}, options interface{}) e
 		return err
 	}
 
-	if envelop, ok := response.(*api.Envelope); ok {
+	if envelop, ok := response.(*Envelope); ok {
 		if envelop.Stat == api.StatFail {
 			return envelop.Error
 		}
