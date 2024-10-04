@@ -2,7 +2,7 @@ package api
 
 import "fmt"
 
-// Error.Type values
+// [api.Error.Type] values
 const (
 	ErrorTypeParameterMissing = "missing_parameter"
 	ErrorTypeNotAuthorized    = "not_authorized"
@@ -10,15 +10,19 @@ const (
 
 // Error messages
 const (
+// Error messages that are more user-friendly (wordy) than what the UptimeRobot provides
 	ErrParameterMissing = "no `%s` parameter found in the API request"
 	ErrNotAuthorized    = "API key is not authorized to make this request"
 )
 
+// Error provides details for any API request failures.
+// An API request failure is indicated when [api.Envelope.Stat] matches [api.StatFail]
 type Error struct {
 	Type          string `json:"type,omitempty"`
 	ParameterName string `json:"parameter_name,omitempty"`
 }
 
+// Error enables using API errors as Go errors
 func (e Error) Error() string {
 	switch e.Type {
 	case ErrorTypeParameterMissing:

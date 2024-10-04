@@ -10,8 +10,10 @@ import (
 
 var ErrUnknownType = errors.New("unknown monitor type")
 
+// Type of monitor
 type Type int64
 
+// Type ID provided by the UptimeRobot API
 const (
 	TypeHttp    Type = 1
 	TypeKeyword Type = 2
@@ -19,6 +21,7 @@ const (
 	TypePort    Type = 4
 )
 
+// String provides a user-friendly name for the monitor Type
 func (t Type) String() string {
 	switch t {
 	case TypeHttp:

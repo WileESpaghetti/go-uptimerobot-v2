@@ -12,6 +12,7 @@ var ErrUnknownStatus = errors.New("unknown monitor status")
 
 type Status int64
 
+// Supported Status ID's
 const (
 	MonitorStatusPaused     Status = 0
 	MonitorStatusNotChecked Status = 1

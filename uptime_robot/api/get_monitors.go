@@ -5,11 +5,13 @@ import (
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
 )
 
+// GetMonitors provides monitor configuration and status information.
 type GetMonitors struct {
 	Envelope
 	Monitors []models.Monitor `json:"monitors,omitempty"`
 }
 
+// GetMonitorsRequest provides a way to configure Monitor data
 type GetMonitorsRequest struct {
 	Monitors              models.Monitors   `form:"monitors,omitempty"`
 	Types                 monitors.Types    `form:"types,omitempty"`
@@ -31,20 +33,35 @@ type GetMonitorsOptions struct {
 	//custom_down_durations // only accepted values are 0 or 1, but doesn't appear to do anything or give an invalid parameter error. need to file docs correction
 }
 
+// MonitorOptions configures a GetMonitorsRequest
 type MonitorOptions func(*GetMonitorsRequest)
 
+// WithOptions allows setting all options for [getMonitors] request at once.
+//
+// This is a good option if you are setting many query parameters and do not
+// want to pass several MonitorOptions.
+//
+// [getMonitors]: https://uptimerobot.com/api/
 func WithOptions(getMonitorsRequest *GetMonitorsRequest) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		*options = *getMonitorsRequest
 	}
 }
 
+// WithMonitors allows you to limit the data returned to specific monitors
 func WithMonitors(monitors models.Monitors) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.Monitors = monitors
 	}
 }
 
+// WithTypes allows you to limit returned monitors to specific [monitors.Type]
+//
+// Supported monitor types ([monitors] may include an updated list)
+//   - [monitors.TypeHttp]
+//   - [monitors.TypeKeyword]
+//   - [monitors.TypePing]
+//   - [monitors.TypePort]
 func WithTypes(types monitors.Types) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.Types = types
