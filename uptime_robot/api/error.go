@@ -6,10 +6,9 @@ import "fmt"
 const (
 	ErrorTypeParameterMissing = "missing_parameter"
 	ErrorTypeNotAuthorized    = "not_authorized"
+	ErrorTypeInvalidParameter = "invalid_parameter"
 )
 
-// Error messages
-const (
 // Error messages that are more user-friendly (wordy) than what the UptimeRobot provides
 	ErrParameterMissing = "no `%s` parameter found in the API request"
 	ErrNotAuthorized    = "API key is not authorized to make this request"
@@ -20,6 +19,7 @@ const (
 type Error struct {
 	Type          string `json:"type,omitempty"`
 	ParameterName string `json:"parameter_name,omitempty"`
+	Message       string `json:"message,omitempty"`
 }
 
 // Error enables using API errors as Go errors
@@ -29,7 +29,12 @@ func (e Error) Error() string {
 		return fmt.Sprintf(ErrParameterMissing, e.ParameterName)
 	case ErrorTypeNotAuthorized:
 		return ErrNotAuthorized
+	case ErrorTypeInvalidParameter:
+		return e.Message
 	default:
+		if len(e.Message) > 0 {
+			return e.Message
+		}
 		return e.Type
 	}
 }
