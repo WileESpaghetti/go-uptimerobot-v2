@@ -10,6 +10,7 @@ const (
 )
 
 // Error messages that are more user-friendly (wordy) than what the UptimeRobot provides
+const (
 	ErrParameterMissing = "no `%s` parameter found in the API request"
 	ErrNotAuthorized    = "API key is not authorized to make this request"
 )
