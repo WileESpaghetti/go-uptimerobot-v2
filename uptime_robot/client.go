@@ -2,6 +2,7 @@ package uptime_robot
 
 import (
 	"encoding/json"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -95,7 +96,7 @@ func (c *Client) GetAccountDetails() (*models.Account, error) {
 	return &env.Account, err
 }
 
-func (c *Client) GetMonitors(options ...api.MonitorOptions) (models.Monitors, error) {
+func (c *Client) GetMonitors(options ...api.MonitorOptions) (monitors.Monitors, error) {
 	env := &api.GetMonitors{}
 
 	params := &api.GetMonitorsRequest{}

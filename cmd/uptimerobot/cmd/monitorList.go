@@ -4,16 +4,12 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
 	"github.com/spf13/cobra"
 	"io"
-)
-
-import (
-	"fmt"
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
 	"os"
 	"strings"
 	"text/tabwriter"
@@ -51,7 +47,7 @@ func init() {
 const errBadMonitorListFormat = "could not get monitor list: %w"
 
 func MonitorListAction(out io.Writer, apiClient *uptime_robot.Client, types monitors.Types, statuses monitors.Statuses, uptimeRatios []int64, includeAllTimeUptimeRatio bool, args []string) error {
-	ms := &models.Monitors{}
+	ms := &monitors.Monitors{}
 	if len(args) > 0 {
 		monitorStr := strings.Join(args, "-")
 		if err := ms.Set(monitorStr); err != nil {

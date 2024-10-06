@@ -1,19 +1,18 @@
 package api
 
 import (
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
 )
 
 // GetMonitors provides monitor configuration and status information.
 type GetMonitors struct {
 	Envelope
-	Monitors []models.Monitor `json:"monitors,omitempty"`
+	Monitors []monitors.Monitor `json:"monitors,omitempty"`
 }
 
 // GetMonitorsRequest provides a way to configure Monitor data
 type GetMonitorsRequest struct {
-	Monitors              models.Monitors   `form:"monitors,omitempty"`
+	Monitors              monitors.Monitors `form:"monitors,omitempty"`
 	Types                 monitors.Types    `form:"types,omitempty"`
 	Statuses              monitors.Statuses `form:"statuses,omitempty"`
 	UptimeRatios          []int64           `form:"custom_uptime_ratios,omitempty"` // days
@@ -50,6 +49,7 @@ func WithOptions(getMonitorsRequest *GetMonitorsRequest) MonitorOptions {
 
 // WithMonitors allows you to limit the data returned to specific monitors
 func WithMonitors(monitors models.Monitors) MonitorOptions {
+func WithMonitors(monitors monitors.Monitors) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.Monitors = monitors
 	}

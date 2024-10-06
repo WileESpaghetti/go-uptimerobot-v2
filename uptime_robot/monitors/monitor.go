@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/numbers"
 )
 
@@ -29,6 +28,22 @@ type Monitor struct {
 	KeywordCaseType    monitors.KeywordCaseType `form:"-"             json:"keyword_case_type"`
 	Timeout            int64                    `form:"-"             json:"timeout"`
 	AllTimeUptimeRatio *float64                 `form:"-"             json:"all_time_uptime_ratio"`
+	ID                 int64            `form:"id,omitempty"  json:"id,omitempty"`
+	FriendlyName       string           `form:"friendly_name" json:"friendly_name"`
+	Url                *url.URL         `form:"-"             json:"-"`
+	Type               Type             `form:"type"          json:"type"`
+	Status             Status           `form:"status"        json:"status"`
+	SubType            SubType          `form:"sub_type"      json:"sub_type"`
+	KeywordType        KeywordType      `form:"keyword_type"  json:"keyword_type"`
+	KeywordValue       string           `form:"keyword_value" json:"keyword_value"`
+	HttpUsername       string           `form:"http_username" json:"http_username"`
+	HttpPassword       string           `form:"http_password" json:"http_password"`
+	Port               numbers.Optional `form:"port"          json:"port"`
+	Interval           int64            `form:"interval"      json:"interval"`
+	CreateDatetime     time.Time        `form:"-"             json:"-"` // FIXME not in API docs. need to send email
+	KeywordCaseType    KeywordCaseType  `form:"-"             json:"keyword_case_type"`
+	Timeout            int64            `form:"-"             json:"timeout"`
+	AllTimeUptimeRatio *float64         `form:"-"             json:"all_time_uptime_ratio"`
 }
 
 // unencodableMonitor is used to break encoding loops for jsonMonitor
