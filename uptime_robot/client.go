@@ -19,14 +19,21 @@ const (
 	userAgent = "go-uptimerobot-v2/1.0.0 (Language=Go)"
 )
 
+// Client makes requests to the UptimeRobot API version 2.0
 type Client struct {
-	ApiKey     string       `form:"api_key"`
-	UserAgent  string       `form:"-"`
-	Url        string       `form:"-"`
-	HttpClient *http.Client `form:"-"`
+	// Can be any of the API key types supported by the API
+	ApiKey string
+	// User agent used when communicating with the UptimeRobot API.
+	UserAgent string
+	// Url should always be specified with a trailing slash
+	Url string
+	// Uses http.DefaultClient by default
+	HttpClient *http.Client
 }
 
 type Envelope = api.Envelope
+
+// NewClient returns a new UptimeRobot API version 2.0 client using the default settings and the given API key.
 func NewClient(apiKey string) *Client {
 	return &Client{ApiKey: apiKey,
 		Url:        baseUrl,
