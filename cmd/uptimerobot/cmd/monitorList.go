@@ -26,29 +26,25 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return MonitorListAction(os.Stdout, apiClient, monitorTypes, monitorStatuses, monitorUptimeRatios, monitorHasAllTimeUptimeRatio, monitorHasLogs, args)
+		return MonitorListAction(os.Stdout, apiClient, &monitorListRequest, args)
 	},
 }
 
-var monitorTypes monitors.Types
-var monitorStatuses monitors.Statuses
-var monitorUptimeRatios []int64
-var monitorHasAllTimeUptimeRatio bool
-var monitorHasLogs bool
+var monitorListRequest = api.GetMonitorsRequest{}
 
 func init() {
 	monitorCmd.AddCommand(monitorListCmd)
 
-	monitorListCmd.Flags().VarP(newMonitorTypesFlag(monitors.Types{}, &monitorTypes), "type", "t", "Monitor types: 1 - HTTP(s), 2 - Keyword, 3 - Ping, 4 - Port, 5 - Heartbeat")
-	monitorListCmd.Flags().VarP(newMonitorStatusesFlag(monitors.Statuses{}, &monitorStatuses), "status", "s", "Monitor Statuses: 0 - Paused, 1 - Not Checked, 2 - Up, 8 - Seems Down, 9 - Down")
-	monitorListCmd.Flags().Int64SliceVar(&monitorUptimeRatios, "uptime-ratios", []int64{}, "Number of days to calculate the uptime ratio(s)") // FIXME might need a custom flag so that we can include hyphen separated
-	monitorListCmd.Flags().BoolVar(&monitorHasAllTimeUptimeRatio, "all-time-uptime-ratio", false, "Includes the all time uptime ratio")
-	monitorListCmd.Flags().BoolVar(&monitorHasLogs, "logs", false, "Include event logs with monitors")
+	monitorListCmd.Flags().VarP(newMonitorTypesFlag(monitors.Types{}, &monitorListRequest.Types), "type", "t", "Monitor types: 1 - HTTP(s), 2 - Keyword, 3 - Ping, 4 - Port, 5 - Heartbeat")
+	monitorListCmd.Flags().VarP(newMonitorStatusesFlag(monitors.Statuses{}, &monitorListRequest.Statuses), "status", "s", "Monitor Statuses: 0 - Paused, 1 - Not Checked, 2 - Up, 8 - Seems Down, 9 - Down")
+	monitorListCmd.Flags().Int64SliceVar(&monitorListRequest.UptimeRatios, "uptime-ratios", []int64{}, "Number of days to calculate the uptime ratio(s)") // FIXME might need a custom flag so that we can include hyphen separated
+	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasAllTimeUptimeRatio, "all-time-uptime-ratio", false, "Includes the all time uptime ratio")
+	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasLogs, "logs", false, "Include event logs with monitors")
 }
 
 const errBadMonitorListFormat = "could not get monitor list: %w"
 
-func MonitorListAction(out io.Writer, apiClient *uptime_robot.Client, types monitors.Types, statuses monitors.Statuses, uptimeRatios []int64, includeAllTimeUptimeRatio bool, includeLogs bool, args []string) error {
+func MonitorListAction(out io.Writer, apiClient *uptime_robot.Client, options *api.GetMonitorsRequest, args []string) error {
 	ms := &monitors.Monitors{}
 	if len(args) > 0 {
 		monitorStr := strings.Join(args, "-")
@@ -57,18 +53,8 @@ func MonitorListAction(out io.Writer, apiClient *uptime_robot.Client, types moni
 		}
 	}
 
-	// FIXME if we use a GetMonitorsOptions struct instead we don't need this append logic
-	options := make([]api.MonitorOptions, 0, 5) // number of flags in the command
-	options = append(options,
-		api.WithMonitors(*ms),
-		api.WithTypes(types),
-		api.WithStatuses(statuses),
-		api.WithUptimeRatios(uptimeRatios),
-		api.WithAllTimeUptimeRatio(includeAllTimeUptimeRatio),
-		api.WithLogs(includeLogs))
-
 	// TODO does not handle pagination
-	getMonitorResults, err := apiClient.GetMonitors(options...)
+	getMonitorResults, err := apiClient.GetMonitors(api.WithOptions(options))
 	if err != nil {
 		return err
 	}
