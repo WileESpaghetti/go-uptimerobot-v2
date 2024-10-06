@@ -1,4 +1,4 @@
-package models
+package monitors
 
 import (
 	"encoding/json"
@@ -12,22 +12,6 @@ import (
 )
 
 type Monitor struct {
-	ID                 int64                    `form:"id,omitempty"  json:"id,omitempty"`
-	FriendlyName       string                   `form:"friendly_name" json:"friendly_name"`
-	Url                *url.URL                 `form:"-"             json:"-"`
-	Type               monitors.Type            `form:"type"          json:"type"`
-	Status             monitors.Status          `form:"status"        json:"status"`
-	SubType            monitors.SubType         `form:"sub_type"      json:"sub_type"`
-	KeywordType        monitors.KeywordType     `form:"keyword_type"  json:"keyword_type"`
-	KeywordValue       string                   `form:"keyword_value" json:"keyword_value"`
-	HttpUsername       string                   `form:"http_username" json:"http_username"`
-	HttpPassword       string                   `form:"http_password" json:"http_password"`
-	Port               numbers.Optional         `form:"port"          json:"port"`
-	Interval           int64                    `form:"interval"      json:"interval"`
-	CreateDatetime     time.Time                `form:"-"             json:"-"` // FIXME not in API docs. need to send email
-	KeywordCaseType    monitors.KeywordCaseType `form:"-"             json:"keyword_case_type"`
-	Timeout            int64                    `form:"-"             json:"timeout"`
-	AllTimeUptimeRatio *float64                 `form:"-"             json:"all_time_uptime_ratio"`
 	ID                 int64            `form:"id,omitempty"  json:"id,omitempty"`
 	FriendlyName       string           `form:"friendly_name" json:"friendly_name"`
 	Url                *url.URL         `form:"-"             json:"-"`
@@ -44,6 +28,7 @@ type Monitor struct {
 	KeywordCaseType    KeywordCaseType  `form:"-"             json:"keyword_case_type"`
 	Timeout            int64            `form:"-"             json:"timeout"`
 	AllTimeUptimeRatio *float64         `form:"-"             json:"all_time_uptime_ratio"`
+	Logs               []LogEntry       `form:"-"             json:"logs"`
 }
 
 // unencodableMonitor is used to break encoding loops for jsonMonitor
@@ -83,6 +68,7 @@ func (jm jsonMonitor) Monitor() Monitor {
 		Port:               jm.unencodableMonitor.Port,
 		Interval:           jm.unencodableMonitor.Interval,
 		AllTimeUptimeRatio: allTimeUptimeRatio,
+		Logs:               jm.Logs,
 
 		// This will be inaccurate for some older monitors. I'm guessing that since the `create_datetime` attribute
 		// was added to the API at a later date this results in the creation date older pre-existing monitors to

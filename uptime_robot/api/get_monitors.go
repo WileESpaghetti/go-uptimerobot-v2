@@ -17,12 +17,13 @@ type GetMonitorsRequest struct {
 	Statuses              monitors.Statuses `form:"statuses,omitempty"`
 	UptimeRatios          []int64           `form:"custom_uptime_ratios,omitempty"` // days
 	HasAllTimeUptimeRatio bool              `form:"all_time_uptime_ratio,omitempty"`
+	HasLogs               bool              `form:"logs,omitempty"`
 }
 
-type GetMonitorsOptions struct {
+/*
+type getMonitorsOptions struct {
 	all_time_uptime_ratio     bool `` //   "all_time_uptime_ratio": "97.890"
 	all_time_uptime_durations bool
-	logs                      bool
 	response_times            bool
 	alert_contacts            bool
 	mwindows                  bool
@@ -31,6 +32,7 @@ type GetMonitorsOptions struct {
 	timezone                  bool
 	//custom_down_durations // only accepted values are 0 or 1, but doesn't appear to do anything or give an invalid parameter error. need to file docs correction
 }
+*/
 
 // MonitorOptions configures a GetMonitorsRequest
 type MonitorOptions func(*GetMonitorsRequest)
@@ -48,7 +50,6 @@ func WithOptions(getMonitorsRequest *GetMonitorsRequest) MonitorOptions {
 }
 
 // WithMonitors allows you to limit the data returned to specific monitors
-func WithMonitors(monitors models.Monitors) MonitorOptions {
 func WithMonitors(monitors monitors.Monitors) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.Monitors = monitors
@@ -83,5 +84,11 @@ func WithUptimeRatios(uptimeRatios []int64) MonitorOptions {
 func WithAllTimeUptimeRatio(shouldInclude bool) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.HasAllTimeUptimeRatio = shouldInclude
+	}
+}
+
+func WithLogs(shouldInclude bool) MonitorOptions {
+	return func(options *GetMonitorsRequest) {
+		options.HasLogs = shouldInclude
 	}
 }
