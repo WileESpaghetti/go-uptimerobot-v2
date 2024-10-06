@@ -14,24 +14,24 @@ type Status int64
 
 // Supported Status ID's
 const (
-	MonitorStatusPaused     Status = 0
-	MonitorStatusNotChecked Status = 1
-	MonitorStatusUp         Status = 2
-	MonitorStatusSeemsDown  Status = 8
-	MonitorStatusDown       Status = 9
+	StatusPaused     Status = 0
+	StatusNotChecked Status = 1
+	StatusUp         Status = 2
+	StatusSeemsDown  Status = 8
+	StatusDown       Status = 9
 )
 
 func (st Status) String() string {
 	switch st {
-	case MonitorStatusPaused:
+	case StatusPaused:
 		return "Paused"
-	case MonitorStatusNotChecked:
+	case StatusNotChecked:
 		return "Not Checked"
-	case MonitorStatusUp:
+	case StatusUp:
 		return "Up"
-	case MonitorStatusSeemsDown:
+	case StatusSeemsDown:
 		return "Seems Down"
-	case MonitorStatusDown:
+	case StatusDown:
 		return "Down"
 	default:
 		return "Unknown"
