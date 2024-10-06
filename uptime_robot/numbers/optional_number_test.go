@@ -17,7 +17,7 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 		in           string
 		want         Optional
 		wantErr      bool
-		hasNumberErr bool
+		hasNumberErr bool // json.Number encoding error
 		hasIntErr    bool
 		hasStringErr bool
 	}{
@@ -107,6 +107,22 @@ func TestOptionalNumber_UnmarshalJSON(t *testing.T) {
 			want:         Optional(0),
 			wantErr:      true,
 			hasNumberErr: true,
+			hasIntErr:    true,
+			hasStringErr: false,
+		},
+		"83.1": {
+			in:           "83.1",
+			want:         Optional(0),
+			wantErr:      true,
+			hasNumberErr: false,
+			hasIntErr:    true,
+			hasStringErr: true,
+		},
+		"83.1 (quoted)": {
+			in:           "\"83.1\"",
+			want:         Optional(0),
+			wantErr:      true,
+			hasNumberErr: false,
 			hasIntErr:    true,
 			hasStringErr: false,
 		},
