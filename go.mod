@@ -4,8 +4,8 @@ go 1.21
 
 require (
 	github.com/ajg/form v1.5.1
-	github.com/go-test/deep v1.1.0
-	github.com/spf13/cobra v1.7.0
+	github.com/go-test/deep v1.1.1
+	github.com/spf13/cobra v1.8.1
 )
 
 require (
