@@ -100,6 +100,7 @@ func WithLogsLimit(limit int64) MonitorOptions {
 		options.LogsLimit = limit
 	}
 }
+
 func WithResponseTimes(shouldInclude bool) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.HasResponseTimes = shouldInclude
