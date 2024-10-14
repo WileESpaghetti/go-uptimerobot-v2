@@ -73,11 +73,11 @@ func main() {
 - [ ] custom_uptime_ranges
 - [X] all_time_uptime_ratio
 - [ ] all_time_uptime_durations
-- [ ] logs
-  - [ ] logs_start_date
-  - [ ] logs_end_date
+- [X] logs
+  - [ ] logs_start_date [Requires Pro Plan]
+  - [ ] logs_end_date [Requires Pro Plan]
   - [ ] log_types
-  - [ ] logs_limit
+  - [X] logs_limit
 - [ ] response_times
   - [ ] response_times_limit
   - [ ] response_times_average

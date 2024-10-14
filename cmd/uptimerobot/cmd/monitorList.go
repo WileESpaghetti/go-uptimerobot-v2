@@ -40,6 +40,7 @@ func init() {
 	monitorListCmd.Flags().Int64SliceVar(&monitorListRequest.UptimeRatios, "uptime-ratios", []int64{}, "Number of days to calculate the uptime ratio(s)") // FIXME might need a custom flag so that we can include hyphen separated
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasAllTimeUptimeRatio, "all-time-uptime-ratio", false, "Includes the all time uptime ratio")
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasLogs, "logs", false, "Include event logs with monitors")
+	monitorListCmd.Flags().Int64Var(&monitorListRequest.LogsLimit, "logs-limit", 0, "The number of logs to be returned in descending order")
 }
 
 const errBadMonitorListFormat = "could not get monitor list: %w"
