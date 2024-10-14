@@ -19,6 +19,7 @@ type GetMonitorsRequest struct {
 	HasAllTimeUptimeRatio bool              `form:"all_time_uptime_ratio,omitempty"`
 	HasLogs               bool              `form:"logs,omitempty"`
 	LogsLimit             int64             `form:"logs_limit,omitempty"`
+	HasResponseTimes      bool              `form:"response_times,omitempty"`
 }
 
 /*
@@ -97,5 +98,10 @@ func WithLogs(shouldInclude bool) MonitorOptions {
 func WithLogsLimit(limit int64) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.LogsLimit = limit
+	}
+}
+func WithResponseTimes(shouldInclude bool) MonitorOptions {
+	return func(options *GetMonitorsRequest) {
+		options.HasResponseTimes = shouldInclude
 	}
 }
