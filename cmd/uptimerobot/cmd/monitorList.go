@@ -42,6 +42,7 @@ func init() {
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasLogs, "logs", false, "Include event logs with monitors")
 	monitorListCmd.Flags().Int64Var(&monitorListRequest.LogsLimit, "logs-limit", 0, "The number of logs to be returned in descending order")
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasResponseTimes, "response-times", false, "Include response times with monitors")
+	monitorListCmd.Flags().Int64Var(&monitorListRequest.ResponseTimesLimit, "response-times-limit", 0, "The number of response times to be returned")
 }
 
 const errBadMonitorListFormat = "could not get monitor list: %w"
