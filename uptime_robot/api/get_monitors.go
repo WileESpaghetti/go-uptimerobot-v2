@@ -20,6 +20,10 @@ type GetMonitorsRequest struct {
 	HasLogs               bool              `form:"logs,omitempty"`
 	LogsLimit             int64             `form:"logs_limit,omitempty"`
 	HasResponseTimes      bool              `form:"response_times,omitempty"`
+
+	// ResponseTimesLimit only takes effect when not using response_times_start_date and response_times_end_date
+	// If empty, last 24 hours of logs are returned (
+	ResponseTimesLimit int64 `form:"response_times_limit,omitempty"`
 }
 
 /*
@@ -104,5 +108,11 @@ func WithLogsLimit(limit int64) MonitorOptions {
 func WithResponseTimes(shouldInclude bool) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.HasResponseTimes = shouldInclude
+	}
+}
+
+func WithResponseTimesLimit(limit int64) MonitorOptions {
+	return func(options *GetMonitorsRequest) {
+		options.ResponseTimesLimit = limit
 	}
 }
