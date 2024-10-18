@@ -24,6 +24,10 @@ type GetMonitorsRequest struct {
 	// ResponseTimesLimit only takes effect when not using response_times_start_date and response_times_end_date
 	// If empty, last 24 hours of logs are returned (
 	ResponseTimesLimit int64 `form:"response_times_limit,omitempty"`
+
+	// ResponseTimesAverage averages the response times in intervals using the specified number of minutes.
+	// 0 is the default and is unaveraged. The dashboard uses 30 minutes
+	ResponseTimesAverage int64 `form:"response_times_limit,omitempty"`
 }
 
 /*
@@ -114,5 +118,11 @@ func WithResponseTimes(shouldInclude bool) MonitorOptions {
 func WithResponseTimesLimit(limit int64) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.ResponseTimesLimit = limit
+	}
+}
+
+func WithResponseTimesAverage(minutesPerInterval int64) MonitorOptions {
+	return func(options *GetMonitorsRequest) {
+		options.ResponseTimesAverage = minutesPerInterval
 	}
 }
