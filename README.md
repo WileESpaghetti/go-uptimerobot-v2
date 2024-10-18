@@ -80,7 +80,7 @@ func main() {
   - [X] logs_limit
 - [X] response_times
   - [X] response_times_limit
-  - [ ] response_times_average
+  - [X] response_times_average
   - [ ] response_times_start_date
   - [ ] response_times_end_date
 - [ ] alert_contacts
