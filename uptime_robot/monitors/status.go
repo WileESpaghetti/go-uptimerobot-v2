@@ -39,7 +39,7 @@ func (st Status) String() string {
 }
 
 func NewStatus(s string) (Status, error) {
-	if s == "" {
+	if len(s) == 0 {
 		return Status(0), ErrUnknownStatus
 	}
 
