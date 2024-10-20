@@ -2,6 +2,7 @@ package uptime_robot
 
 import (
 	"encoding/json"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
 	"net/http"
 	"net/url"
@@ -11,7 +12,6 @@ import (
 	"github.com/ajg/form"
 
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
 )
 
 const (
@@ -42,9 +42,10 @@ func NewClient(apiKey string) *Client {
 }
 
 func (c *Client) NewRequest(apiMethod string, options interface{}) (*http.Request, error) {
+	// FIXME does this need to be exported, maybe yes for future proofind?
 	endpoint := c.Url + apiMethod
 
-	postData := url.Values{}                                   // FIXME this section still feels awkward because we double assign postData, but we need to handle nil options
+	postData := url.Values{}                                   // FIXME this section still feels awkward because we double assign postData, but we need to handle nil options. Maybe functional opts or some other pattern that returns an HTTP form?
 	if !(options == nil || reflect.ValueOf(options).IsNil()) { // FIXME https://mangatmodi.medium.com/go-check-nil-interface-the-right-way-d142776edef1
 		optionsData, err := form.EncodeToValues(options)
 		if err != nil {
@@ -67,7 +68,10 @@ func (c *Client) NewRequest(apiMethod string, options interface{}) (*http.Reques
 	return req, nil
 }
 
-func (c *Client) Get(method string, response interface{}, options interface{}) error {
+func (c *Client) Get(method string, response interface{}, options interface{}) error { // FIXME maybe have a WithOptions instead of just an options interface since the options are optional
+	// FIXME might make sense to distinguish between network error and API error (stat = fail)
+	// FIXME should we remove `Get` prefix from specific methods? Right now the `Get` is because the API endpoints have them instead of because they are "Getters"
+	// FIXME feels weird to accept response and edit in place. Maybe as part of options?
 	request, err := c.NewRequest(method, options)
 	if err != nil {
 		return err

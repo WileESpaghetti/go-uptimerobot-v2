@@ -76,7 +76,7 @@ func main() {
 - [X] logs
   - [ ] logs_start_date [Requires Pro Plan]
   - [ ] logs_end_date [Requires Pro Plan]
-  - [ ] log_types
+  - [X] log_types
   - [X] logs_limit
 - [X] response_times
   - [X] response_times_limit
