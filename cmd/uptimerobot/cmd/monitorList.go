@@ -36,7 +36,7 @@ func init() {
 	monitorCmd.AddCommand(monitorListCmd)
 
 	monitorListCmd.Flags().VarP(newMonitorTypesFlag(monitors.Types{}, &monitorListRequest.Types), "type", "t", "Monitor types: 1 - HTTP(s), 2 - Keyword, 3 - Ping, 4 - Port, 5 - Heartbeat")
-	monitorListCmd.Flags().VarP(newMonitorStatusesFlag(monitors.Statuses{}, &monitorListRequest.Statuses), "status", "s", "Monitor Statuses: 0 - Paused, 1 - Not Checked, 2 - Up, 8 - Seems Down, 9 - Down")
+	monitorListCmd.Flags().VarP(newMonitorStatusesFlag(monitors.Statuses{}, &monitorListRequest.Statuses), "status", "s", "Monitor Statuses:\n\t0 - Paused,\n\t1 - Not Checked,\n\t2 - Up,\n\t8 - Seems Down,\n\t9 - Down")
 	monitorListCmd.Flags().Int64SliceVar(&monitorListRequest.UptimeRatios, "uptime-ratios", []int64{}, "Number of days to calculate the uptime ratio(s)") // FIXME might need a custom flag so that we can include hyphen separated
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasAllTimeUptimeRatio, "all-time-uptime-ratio", false, "Includes the all time uptime ratio")
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasLogs, "logs", false, "Include event logs with monitors")

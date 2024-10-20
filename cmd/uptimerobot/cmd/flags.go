@@ -73,53 +73,10 @@ func (mtf *monitorTypesFlag) Type() string {
 	return "monitorTypesFlag"
 }
 
-//////////////////////////////
+///////////////////////////////
 
-type monitorStatusesFlag struct {
-	value   *monitors.Statuses
-	changed bool
-}
-
-func newMonitorStatusesFlag(val monitors.Statuses, p *monitors.Statuses) *monitorStatusesFlag {
-	msf := &monitorStatusesFlag{}
-	msf.value = p
-	*msf.value = val
-	return msf
-}
-
-func (msf *monitorStatusesFlag) String() string {
-	return msf.value.String()
-}
-
-func (msf *monitorStatusesFlag) Set(val string) error {
-	val = strings.Replace(val, "-", ",", -1) // normalize the weird list format used by the UptimeRobot API
-
-	v, err := readAsCSV(val)
-	if err != nil {
-		return err
-	}
-
-	// validate/convert raw values to monitor statuses
-	statuses := make(monitors.Statuses, len(v))
-	for i, t := range v {
-		statuses[i], err = monitors.NewStatus(t)
-		if err != nil {
-			return fmt.Errorf("%s is an unsupported monitor status", t)
-		}
-	}
-
-	if !msf.changed {
-		*msf.value = statuses
-	} else {
-		*msf.value = append(*msf.value, statuses...)
-	}
-	msf.changed = true
-
-	return nil
-}
-
-func (msf *monitorStatusesFlag) Type() string {
-	return "monitorStatusesFlag"
+func newMonitorStatusesFlag(val monitors.Statuses, p *monitors.Statuses) *separatedValueFlag[monitors.Status] {
+	return newSeparatedValueFlag[monitors.Status](val, p, monitors.NewStatus)
 }
 
 ////////////////////////////

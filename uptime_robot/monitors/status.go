@@ -111,3 +111,7 @@ func (ss *Statuses) UnmarshalText(text []byte) error {
 func (ss *Statuses) Set(s string) error {
 	return ss.UnmarshalText([]byte(s))
 }
+
+func (ss *Statuses) GetSlice() *[]Status {
+	return (*[]Status)(ss)
+}
