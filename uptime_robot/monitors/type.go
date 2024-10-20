@@ -109,3 +109,7 @@ func (ts *Types) UnmarshalText(text []byte) error {
 func (ts *Types) Set(s string) error {
 	return ts.UnmarshalText([]byte(s))
 }
+
+func (ts *Types) GetSlice() *[]Type {
+	return (*[]Type)(ts)
+}
