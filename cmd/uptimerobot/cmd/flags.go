@@ -34,6 +34,10 @@ func newMonitorStatusesFlag(val monitors.Statuses, p *monitors.Statuses) *separa
 	return newSeparatedValueFlag[monitors.Status](val, p, monitors.NewStatus)
 }
 
+func newMonitorLogTypesFlag(val monitors.LogTypes, p *monitors.LogTypes) *separatedValueFlag[monitors.LogType] {
+	return newSeparatedValueFlag[monitors.LogType](val, p, monitors.NewLogType)
+}
+
 ////////////////////////////
 
 type sliceable[T any] interface {
