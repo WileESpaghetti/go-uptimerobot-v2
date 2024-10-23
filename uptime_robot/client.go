@@ -2,6 +2,7 @@ package uptime_robot
 
 import (
 	"encoding/json"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/alert_contacts"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
 	"net/http"
@@ -121,4 +122,15 @@ func (c *Client) GetMonitors(options ...api.MonitorOptions) (monitors.Monitors, 
 	}
 
 	return env.Monitors, err
+}
+
+func (c *Client) GetAlertContacts() ([]alert_contacts.AlertContact, error) {
+	env := &api.GetAlertContacts{}
+
+	err := c.Get("getAlertContacts", env, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return env.AlertContacts, err
 }
