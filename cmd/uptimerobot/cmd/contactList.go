@@ -5,6 +5,10 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot"
+	"io"
+	"strings"
+	"text/tabwriter"
 
 	"github.com/spf13/cobra"
 )
@@ -19,21 +23,31 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("contactList called")
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return ContactListAction(cmd.OutOrStdout(), apiClient, args)
 	},
 }
 
 func init() {
 	contactCmd.AddCommand(contactListCmd)
+}
 
-	// Here you will define your flags and configuration settings.
+func ContactListAction(out io.Writer, apiClient *uptime_robot.Client, args []string) error {
+	getAlertContactResults, err := apiClient.GetAlertContacts()
+	if err != nil {
+		return err
+	}
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// contactListCmd.PersistentFlags().String("foo", "", "A help for foo")
+	w := tabwriter.NewWriter(out, 0, 0, 2, ' ', tabwriter.Debug)
+	_, _ = fmt.Fprintln(w, strings.Join([]string{"ID", "STATUS", "NAME", "TYPE", "VALUE"}, "\t"))
+	for _, contact := range getAlertContactResults {
+		_, _ = fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", contact.ID, contact.Status, contact.FriendlyName, contact.Type, contact.Value)
+	}
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// contactListCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	err = w.Flush()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

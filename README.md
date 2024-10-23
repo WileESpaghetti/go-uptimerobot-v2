@@ -53,7 +53,8 @@ func main() {
 
 ### Implemented groups
 * account - displays account information
-* monitors
+* monitor
+* contact
 * help
 * other cobra built-ins
 
