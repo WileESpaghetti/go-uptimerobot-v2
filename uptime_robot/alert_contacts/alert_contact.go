@@ -29,6 +29,45 @@ const (
 	TypeDiscord    Type = 23
 )
 
+func (t Type) String() string {
+	switch t {
+	case TypeSMS:
+		return "SMS"
+	case TypeEmail:
+		return "Email"
+	case TypeTwitter:
+		return "Twitter"
+	case TypeWebhook:
+		return "Webhook"
+	case TypePushbullet:
+		return "Pushbullet"
+	case TypeZapier:
+		return "Zapier"
+	case TypeProSMS:
+		return "ProSMS"
+	case TypePushover:
+		return "Pushover"
+	case TypeSlack:
+		return "Slack"
+	case TypeVoiceCall:
+		return "VoiceCall"
+	case TypeSplunk:
+		return "Splunk"
+	case TypePagerDuty:
+		return "PagerDuty"
+	case TypeOpsgenie:
+		return "Opsgenie"
+	case TypeMSTeams:
+		return "MSTeams"
+	case TypeGoogleChat:
+		return "GoogleChat"
+	case TypeDiscord:
+		return "Discord"
+	default:
+		return "Unknown"
+	}
+}
+
 type Status int64
 
 // Status of the Alert Contact
@@ -37,6 +76,19 @@ const (
 	StatusPaused       Status = 1
 	StatusActive       Status = 2
 )
+
+func (s Status) String() string {
+	switch s {
+	case StatusNotActivated:
+		return "Not Activated"
+	case StatusPaused:
+		return "Paused"
+	case StatusActive:
+		return "Active"
+	default:
+		return "Unknown"
+	}
+}
 
 type AlertContact struct {
 	// ID can have leading zeros so it must be a string
