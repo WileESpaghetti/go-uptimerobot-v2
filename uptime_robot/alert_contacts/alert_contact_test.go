@@ -10,7 +10,7 @@ import (
 
 func TestAlertContact_UnmarshalJSON(t *testing.T) {
 	acJson := []byte(`{
-	"id": 12345678,
+	"id": "12345678",
 	"type": 2,
 	"friendly_name": "test contact",
 	"value": "example@example.com",
@@ -20,7 +20,7 @@ func TestAlertContact_UnmarshalJSON(t *testing.T) {
 }`)
 
 	want := AlertContact{
-		ID:           12345678,
+		ID:           "12345678",
 		Type:         2,
 		FriendlyName: "test contact",
 		Value:        "example@example.com",
@@ -42,7 +42,7 @@ func TestAlertContact_UnmarshalJSON(t *testing.T) {
 
 func TestAlertContact_MarshalJSON(t *testing.T) {
 	wantJson := []byte(`{
-	"id": 12345678,
+	"id": "12345678",
 	"type": 2,
 	"friendly_name": "test contact",
 	"value": "example@example.com",
@@ -52,7 +52,7 @@ func TestAlertContact_MarshalJSON(t *testing.T) {
 }`)
 
 	ac := AlertContact{
-		ID:           12345678,
+		ID:           "12345678",
 		Type:         2,
 		FriendlyName: "test contact",
 		Value:        "example@example.com",

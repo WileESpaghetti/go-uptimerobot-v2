@@ -39,7 +39,8 @@ const (
 )
 
 type AlertContact struct {
-	ID           int64  `json:"id"`
+	// ID can have leading zeros so it must be a string
+	ID           string `json:"id"`
 	Type         Type   `json:"type"`
 	FriendlyName string `json:"friendly_name"`
 	Value        string `json:"value"`
