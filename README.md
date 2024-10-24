@@ -98,6 +98,6 @@ func main() {
 
 #### `getAlertContacts`
 - [X] api_key
-- [ ] alert_contacts
+- [X] alert_contacts
 - [ ] offset
 - [ ] limit

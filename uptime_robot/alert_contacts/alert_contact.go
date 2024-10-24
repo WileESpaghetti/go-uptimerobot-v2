@@ -3,6 +3,7 @@ package alert_contacts
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -155,4 +156,57 @@ func (ac AlertContact) MarshalJSON() ([]byte, error) {
 		Threshold:               int64(ac.Threshold / time.Minute),
 		Recurrence:              int64(ac.Recurrence / time.Minute),
 	})
+}
+
+////////////////////
+
+type AlertContacts []AlertContact
+
+func (acs AlertContacts) String() string {
+	ids := make(map[string]string, len(acs))
+
+	var combined strings.Builder
+	for i, contact := range acs {
+		if _, ok := ids[contact.ID]; ok {
+			continue
+		}
+
+		if i > 0 {
+			combined.WriteString("-")
+		}
+
+		ids[contact.ID] = contact.ID
+		combined.WriteString(contact.ID)
+	}
+
+	return combined.String()
+}
+
+func (acs *AlertContacts) MarshalText() ([]byte, error) {
+	// FIXME not sure which is faster this or strings.builder
+	//return []byte(acs.String()), nil
+	var ids []string
+
+	for _, ac := range *acs {
+		ids = append(ids, ac.ID)
+	}
+
+	combined := strings.Join(ids, "-")
+
+	return []byte(combined), nil
+}
+
+func (acs *AlertContacts) UnmarshalText(text []byte) error {
+	textIDs := strings.Split(string(text), "-")
+
+	for _, id := range textIDs {
+		*acs = append(*acs, AlertContact{ID: id})
+	}
+
+	return nil
+}
+
+// Set is used to create a list of Monitor from a dash-separated list of ID
+func (acs *AlertContacts) Set(s string) error {
+	return acs.UnmarshalText([]byte(s))
 }

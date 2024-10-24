@@ -124,10 +124,15 @@ func (c *Client) GetMonitors(options ...api.MonitorOptions) (monitors.Monitors, 
 	return env.Monitors, err
 }
 
-func (c *Client) GetAlertContacts() ([]alert_contacts.AlertContact, error) {
+func (c *Client) GetAlertContacts(options ...api.AlertContactOptions) ([]alert_contacts.AlertContact, error) {
 	env := &api.GetAlertContacts{}
 
-	err := c.Get("getAlertContacts", env, nil)
+	params := &api.GetAlertContactsRequest{}
+	for _, o := range options {
+		o(params)
+	}
+
+	err := c.Get("getAlertContacts", env, params)
 	if err != nil {
 		return nil, err
 	}

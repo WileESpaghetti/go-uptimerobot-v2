@@ -6,6 +6,8 @@ package cmd
 import (
 	"fmt"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/alert_contacts"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
 	"io"
 	"strings"
 	"text/tabwriter"
@@ -32,8 +34,18 @@ func init() {
 	contactCmd.AddCommand(contactListCmd)
 }
 
+const errBadAlertContactListFormat = "could not get monitor list: %w"
+
 func ContactListAction(out io.Writer, apiClient *uptime_robot.Client, args []string) error {
-	getAlertContactResults, err := apiClient.GetAlertContacts()
+	acs := make(alert_contacts.AlertContacts, 0, len(args))
+	if len(args) > 0 {
+		contactIDs := strings.Join(args, "-")
+		if err := acs.Set(contactIDs); err != nil {
+			return fmt.Errorf(errBadAlertContactListFormat, err)
+		}
+	}
+
+	getAlertContactResults, err := apiClient.GetAlertContacts(api.WithAlertContacts(acs))
 	if err != nil {
 		return err
 	}
