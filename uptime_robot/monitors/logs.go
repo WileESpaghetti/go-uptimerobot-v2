@@ -2,6 +2,7 @@ package monitors
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
@@ -40,13 +41,56 @@ func (lt LogType) String() string {
 type LogEntry struct {
 	Id       int64   `json:"id"`
 	Type     LogType `json:"type"`
-	Datetime int     `json:"datetime"`
-
-	Duration time.Duration `json:"duration"` // API downtime duration is in seconds
+	Datetime time.Time
+	Duration time.Duration // API downtime duration is in seconds
 	Reason   struct {
 		Code   string `json:"code"`
 		Detail string `json:"detail"`
 	} `json:"reason"`
+}
+
+type unencodableLogEntry LogEntry
+
+type jsonLogEntry struct {
+	unencodableLogEntry
+	Datetime int64 `json:"datetime"`
+	Duration int64 `json:"duration"`
+}
+
+func (jl jsonLogEntry) LogEntry() LogEntry {
+	return LogEntry{
+		Id:       jl.Id,
+		Type:     jl.Type,
+		Datetime: time.Unix(jl.Datetime, 0),
+		Duration: time.Duration(jl.Duration) * time.Second,
+		Reason:   jl.Reason,
+	}
+}
+
+func (l *LogEntry) UnmarshalJSON(data []byte) error {
+	var jm jsonLogEntry
+
+	if err := json.Unmarshal(data, &jm); err != nil {
+		return err
+	}
+
+	*l = jm.LogEntry()
+
+	return nil
+}
+
+func (l *LogEntry) MarshalJSON() ([]byte, error) {
+	jm := jsonLogEntry{
+		unencodableLogEntry: unencodableLogEntry{
+			Id:     l.Id,
+			Type:   l.Type,
+			Reason: l.Reason,
+		},
+		Datetime: l.Datetime.Unix(),
+		Duration: int64(l.Duration.Seconds()),
+	}
+
+	return json.Marshal(jm)
 }
 
 ////////////////////////////////////////////////////////////
