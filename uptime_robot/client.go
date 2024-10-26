@@ -2,8 +2,8 @@ package uptime_robot
 
 import (
 	"encoding/json"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/account"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/alert_contacts"
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/models"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
 	"net/http"
 	"net/url"
@@ -98,8 +98,8 @@ func (c *Client) Get(method string, response interface{}, options interface{}) e
 	return err
 }
 
-func (c *Client) GetAccountDetails() (*models.Account, error) {
-	env := &api.GetAccountDetails{}
+func (c *Client) GetAccountDetails() (*account.Account, error) {
+	env := &account.GetAccountDetails{}
 	err := c.Get("getAccountDetails", env, nil)
 	if err != nil {
 		return nil, err
