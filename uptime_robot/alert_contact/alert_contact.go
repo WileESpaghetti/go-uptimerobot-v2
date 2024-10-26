@@ -1,4 +1,4 @@
-package alert_contacts
+package alert_contact
 
 import (
 	"encoding/json"
