@@ -1,4 +1,4 @@
-package monitors
+package monitor
 
 // KeywordType is an Enum
 type KeywordType int64

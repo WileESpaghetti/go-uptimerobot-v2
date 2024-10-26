@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/account"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/alert_contact"
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitor"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -108,10 +108,10 @@ func (c *Client) GetAccountDetails() (*account.Account, error) {
 	return &env.Account, err
 }
 
-func (c *Client) GetMonitors(options ...api.MonitorOptions) (monitors.Monitors, error) {
-	env := &api.GetMonitors{}
+func (c *Client) GetMonitors(options ...monitor.MonitorOptions) (monitor.Monitors, error) {
+	env := &monitor.GetMonitors{}
 
-	params := &api.GetMonitorsRequest{}
+	params := &monitor.GetMonitorsRequest{}
 	for _, o := range options {
 		o(params)
 	}

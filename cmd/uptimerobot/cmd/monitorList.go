@@ -6,8 +6,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot"
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitor"
 	"github.com/spf13/cobra"
 	"io"
 	"os"
@@ -30,17 +29,17 @@ to quickly create a Cobra application.`,
 	},
 }
 
-var monitorListRequest = api.GetMonitorsRequest{}
+var monitorListRequest = monitor.GetMonitorsRequest{}
 
 func init() {
 	monitorCmd.AddCommand(monitorListCmd)
 
-	monitorListCmd.Flags().VarP(newMonitorTypesFlag(monitors.Types{}, &monitorListRequest.Types), "type", "t", "Monitor types: 1 - HTTP(s), 2 - Keyword, 3 - Ping, 4 - Port, 5 - Heartbeat")
-	monitorListCmd.Flags().VarP(newMonitorStatusesFlag(monitors.Statuses{}, &monitorListRequest.Statuses), "status", "s", "Monitor Statuses:\n\t0 - Paused,\n\t1 - Not Checked,\n\t2 - Up,\n\t8 - Seems Down,\n\t9 - Down")
+	monitorListCmd.Flags().VarP(newMonitorTypesFlag(monitor.Types{}, &monitorListRequest.Types), "type", "t", "Monitor types: 1 - HTTP(s), 2 - Keyword, 3 - Ping, 4 - Port, 5 - Heartbeat")
+	monitorListCmd.Flags().VarP(newMonitorStatusesFlag(monitor.Statuses{}, &monitorListRequest.Statuses), "status", "s", "Monitor Statuses:\n\t0 - Paused,\n\t1 - Not Checked,\n\t2 - Up,\n\t8 - Seems Down,\n\t9 - Down")
 	monitorListCmd.Flags().Int64SliceVar(&monitorListRequest.UptimeRatios, "uptime-ratios", []int64{}, "Number of days to calculate the uptime ratio(s)") // FIXME might need a custom flag so that we can include hyphen separated
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasAllTimeUptimeRatio, "all-time-uptime-ratio", false, "Includes the all time uptime ratio")
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasLogs, "logs", false, "Include event logs with monitors")
-	monitorListCmd.Flags().Var(newMonitorLogTypesFlag(monitors.LogTypes{}, &monitorListRequest.LogTypes), "log-type", "Log Types:\n\t1 - Down\n\t2 - Up\n\t98 - Started\n\t99 - Paused")
+	monitorListCmd.Flags().Var(newMonitorLogTypesFlag(monitor.LogTypes{}, &monitorListRequest.LogTypes), "log-type", "Log Types:\n\t1 - Down\n\t2 - Up\n\t98 - Started\n\t99 - Paused")
 	monitorListCmd.Flags().Int64Var(&monitorListRequest.LogsLimit, "logs-limit", 0, "The number of logs to be returned in descending order")
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasResponseTimes, "response-times", false, "Include response times with monitors")
 	monitorListCmd.Flags().Int64Var(&monitorListRequest.ResponseTimesLimit, "response-times-limit", 0, "The number of response times to be returned")
@@ -49,8 +48,8 @@ func init() {
 
 const errBadMonitorListFormat = "could not get monitor list: %w"
 
-func MonitorListAction(out io.Writer, apiClient *uptime_robot.Client, options *api.GetMonitorsRequest, args []string) error {
-	ms := &monitors.Monitors{}
+func MonitorListAction(out io.Writer, apiClient *uptime_robot.Client, options *monitor.GetMonitorsRequest, args []string) error {
+	ms := &monitor.Monitors{}
 	if len(args) > 0 {
 		monitorStr := strings.Join(args, "-")
 		if err := ms.Set(monitorStr); err != nil {
@@ -59,7 +58,7 @@ func MonitorListAction(out io.Writer, apiClient *uptime_robot.Client, options *a
 	}
 
 	// TODO does not handle pagination
-	getMonitorResults, err := apiClient.GetMonitors(api.WithOptions(options))
+	getMonitorResults, err := apiClient.GetMonitors(monitor.WithOptions(options))
 	if err != nil {
 		return err
 	}

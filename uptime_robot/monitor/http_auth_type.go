@@ -1,4 +1,4 @@
-package monitors
+package monitor
 
 type HttpAuthType int64
 

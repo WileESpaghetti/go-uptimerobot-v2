@@ -3,7 +3,7 @@ package cmd
 import (
 	"encoding/csv"
 	"fmt"
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitor"
 	"strings"
 )
 
@@ -26,16 +26,16 @@ func readAsCSV(val string) ([]string, error) {
 //  func (mtf *monitorTypesFlag) Replace(val []string) error
 //  func (mtf *monitorTypesFlag) GetSlice() []string
 
-func newMonitorTypesFlag(val monitors.Types, p *monitors.Types) *separatedValueFlag[monitors.Type] {
-	return newSeparatedValueFlag[monitors.Type](val, p, monitors.NewType)
+func newMonitorTypesFlag(val monitor.Types, p *monitor.Types) *separatedValueFlag[monitor.Type] {
+	return newSeparatedValueFlag[monitor.Type](val, p, monitor.NewType)
 }
 
-func newMonitorStatusesFlag(val monitors.Statuses, p *monitors.Statuses) *separatedValueFlag[monitors.Status] {
-	return newSeparatedValueFlag[monitors.Status](val, p, monitors.NewStatus)
+func newMonitorStatusesFlag(val monitor.Statuses, p *monitor.Statuses) *separatedValueFlag[monitor.Status] {
+	return newSeparatedValueFlag[monitor.Status](val, p, monitor.NewStatus)
 }
 
-func newMonitorLogTypesFlag(val monitors.LogTypes, p *monitors.LogTypes) *separatedValueFlag[monitors.LogType] {
-	return newSeparatedValueFlag[monitors.LogType](val, p, monitors.NewLogType)
+func newMonitorLogTypesFlag(val monitor.LogTypes, p *monitor.LogTypes) *separatedValueFlag[monitor.LogType] {
+	return newSeparatedValueFlag[monitor.LogType](val, p, monitor.NewLogType)
 }
 
 ////////////////////////////

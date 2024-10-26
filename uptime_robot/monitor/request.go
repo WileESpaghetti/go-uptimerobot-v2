@@ -1,26 +1,24 @@
-package api
+package monitor
 
-import (
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitors"
-)
+import "github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
 
 // GetMonitors provides monitor configuration and status information.
 type GetMonitors struct {
-	Envelope
-	Monitors []monitors.Monitor `json:"monitors,omitempty"`
+	api.Envelope
+	Monitors []Monitor `json:"monitors,omitempty"`
 }
 
 // GetMonitorsRequest provides a way to configure Monitor data
 type GetMonitorsRequest struct {
-	Monitors              monitors.Monitors `form:"monitors,omitempty"`
-	Types                 monitors.Types    `form:"types,omitempty"`
-	Statuses              monitors.Statuses `form:"statuses,omitempty"`
-	UptimeRatios          []int64           `form:"custom_uptime_ratios,omitempty"` // days
-	HasAllTimeUptimeRatio bool              `form:"all_time_uptime_ratio,omitempty"`
-	HasLogs               bool              `form:"logs,omitempty"`
-	LogTypes              monitors.LogTypes `form:"log_types,omitempty"`
-	LogsLimit             int64             `form:"logs_limit,omitempty"`
-	HasResponseTimes      bool              `form:"response_times,omitempty"`
+	Monitors              Monitors `form:"monitors,omitempty"`
+	Types                 Types    `form:"types,omitempty"`
+	Statuses              Statuses `form:"statuses,omitempty"`
+	UptimeRatios          []int64  `form:"custom_uptime_ratios,omitempty"` // days
+	HasAllTimeUptimeRatio bool     `form:"all_time_uptime_ratio,omitempty"`
+	HasLogs               bool     `form:"logs,omitempty"`
+	LogTypes              LogTypes `form:"log_types,omitempty"`
+	LogsLimit             int64    `form:"logs_limit,omitempty"`
+	HasResponseTimes      bool     `form:"response_times,omitempty"`
 
 	// ResponseTimesLimit only takes effect when not using response_times_start_date and response_times_end_date
 	// If empty, last 24 hours of logs are returned (
@@ -61,26 +59,26 @@ func WithOptions(getMonitorsRequest *GetMonitorsRequest) MonitorOptions {
 }
 
 // WithMonitors allows you to limit the data returned to specific monitors
-func WithMonitors(monitors monitors.Monitors) MonitorOptions {
+func WithMonitors(monitors Monitors) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.Monitors = monitors
 	}
 }
 
-// WithTypes allows you to limit returned monitors to specific [monitors.Type]
+// WithTypes allows you to limit returned monitors to specific [Type]
 //
-// Supported monitor types ([monitors] may include an updated list)
-//   - [monitors.TypeHttp]
-//   - [monitors.TypeKeyword]
-//   - [monitors.TypePing]
-//   - [monitors.TypePort]
-func WithTypes(types monitors.Types) MonitorOptions {
+// Supported monitor [Type]s
+//   - [TypeHttp]
+//   - [TypeKeyword]
+//   - [TypePing]
+//   - [TypePort]
+func WithTypes(types Types) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.Types = types
 	}
 }
 
-func WithStatuses(statuses monitors.Statuses) MonitorOptions {
+func WithStatuses(statuses Statuses) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.Statuses = statuses
 	}
@@ -128,7 +126,7 @@ func WithResponseTimesAverage(minutesPerInterval int64) MonitorOptions {
 	}
 }
 
-func WithLogTypes(types monitors.LogTypes) MonitorOptions {
+func WithLogTypes(types LogTypes) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.LogTypes = types
 	}
