@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/numbers"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/number"
 )
 
 type Monitor struct {
@@ -22,7 +22,7 @@ type Monitor struct {
 	KeywordValue       string              `form:"keyword_value" json:"keyword_value"`
 	HttpUsername       string              `form:"http_username" json:"http_username"`
 	HttpPassword       string              `form:"http_password" json:"http_password"`
-	Port               numbers.Optional    `form:"port"          json:"port"`
+	Port               number.Optional     `form:"port"          json:"port"`
 	Interval           int64               `form:"interval"      json:"interval"`
 	CreateDatetime     time.Time           `form:"-"             json:"-"` // FIXME not in API docs. need to send email
 	KeywordCaseType    KeywordCaseType     `form:"-"             json:"keyword_case_type"`
@@ -38,11 +38,11 @@ type unencodableMonitor Monitor
 // jsonMonitor is used to handle converting between API JSON responses and the more strictly-typed Monitor struct
 type jsonMonitor struct {
 	unencodableMonitor
-	Url                string           `form:"url"                   json:"url"`
-	CreateDatetime     int64            `form:"create_datetime"       json:"create_datetime"`
-	SubType            numbers.Optional `form:"sub_type"              json:"sub_type"`
-	KeywordType        numbers.Optional `form:"keyword_type"          json:"keyword_type"`
-	AllTimeUptimeRatio json.Number      `form:"all_time_uptime_ratio" json:"all_time_uptime_ratio"`
+	Url                string          `form:"url"                   json:"url"`
+	CreateDatetime     int64           `form:"create_datetime"       json:"create_datetime"`
+	SubType            number.Optional `form:"sub_type"              json:"sub_type"`
+	KeywordType        number.Optional `form:"keyword_type"          json:"keyword_type"`
+	AllTimeUptimeRatio json.Number     `form:"all_time_uptime_ratio" json:"all_time_uptime_ratio"`
 }
 
 func (jm jsonMonitor) Monitor() Monitor {
