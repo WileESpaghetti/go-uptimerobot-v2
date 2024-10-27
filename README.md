@@ -90,7 +90,7 @@ func main() {
 - [ ] custom_http_headers
 - [ ] custom_http_statuses
 - [ ] http_request_details
-- [ ] auth_type
+- [X] auth_type
 - [ ] timezone
 - [ ] offset
 - [ ] limit
