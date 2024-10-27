@@ -88,7 +88,7 @@ func main() {
 - [ ] mwindows
 - [ ] ssl
 - [ ] custom_http_headers
-- [ ] custom_http_statuses
+- [X] custom_http_statuses
 - [ ] http_request_details
 - [X] auth_type
 - [ ] timezone
