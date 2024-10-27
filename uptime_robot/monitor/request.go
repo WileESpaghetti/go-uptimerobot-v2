@@ -28,6 +28,7 @@ type GetMonitorsRequest struct {
 	// 0 is the default and is unaveraged. The dashboard uses 30 minutes
 	ResponseTimesAverage int64 `form:"response_times_limit,omitempty"`
 	HasAlertContacts     bool  `form:"alert_contacts,omitempty"`
+	HasAuthType          bool  `form:"auth_type,omitempty"`
 }
 
 /*
@@ -136,5 +137,11 @@ func WithLogTypes(types LogTypes) MonitorOptions {
 func WithAlertContacts(shouldInclude bool) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.HasAlertContacts = shouldInclude
+	}
+}
+
+func WithAuthType(shouldInclude bool) MonitorOptions {
+	return func(options *GetMonitorsRequest) {
+		options.HasAuthType = shouldInclude
 	}
 }

@@ -32,6 +32,7 @@ type Monitor struct {
 	Logs               []LogEntry                   `form:"-"             json:"logs"`
 	ResponseTimes      []ResponseTimeEntry          `form:"-"             json:"response_times,omitempty"`
 	AlertContacts      []alert_contact.AlertContact `form:"-"             json:"alert_contacts"`
+	AuthType           HttpAuthType                 `form:"-"             json:"auth_type"`
 }
 
 // unencodableMonitor is used to break encoding loops for jsonMonitor
@@ -74,6 +75,7 @@ func (jm jsonMonitor) Monitor() Monitor {
 		Logs:               jm.Logs,
 		ResponseTimes:      jm.ResponseTimes,
 		AlertContacts:      jm.AlertContacts,
+		AuthType:           jm.AuthType,
 
 		// This will be inaccurate for some older monitors. I'm guessing that since the `create_datetime` attribute
 		// was added to the API at a later date this results in the creation date older pre-existing monitors to
