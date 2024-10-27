@@ -19,6 +19,7 @@ type GetMonitorsRequest struct {
 	LogTypes              LogTypes `form:"log_types,omitempty"`
 	LogsLimit             int64    `form:"logs_limit,omitempty"`
 	HasResponseTimes      bool     `form:"response_times,omitempty"`
+	HasCustomHTTPStatuses bool     `form:"custom_http_statuses,omitempty"`
 
 	// ResponseTimesLimit only takes effect when not using response_times_start_date and response_times_end_date
 	// If empty, last 24 hours of logs are returned (
@@ -143,5 +144,11 @@ func WithAlertContacts(shouldInclude bool) MonitorOptions {
 func WithAuthType(shouldInclude bool) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.HasAuthType = shouldInclude
+	}
+}
+
+func WithCustomHTTPStatuses(shouldInclude bool) MonitorOptions {
+	return func(options *GetMonitorsRequest) {
+		options.HasCustomHTTPStatuses = shouldInclude
 	}
 }
