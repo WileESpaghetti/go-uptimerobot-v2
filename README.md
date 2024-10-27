@@ -84,7 +84,7 @@ func main() {
   - [X] response_times_average
   - [ ] response_times_start_date
   - [ ] response_times_end_date
-- [ ] alert_contacts
+- [X] alert_contacts
 - [ ] mwindows
 - [ ] ssl
 - [ ] custom_http_headers
