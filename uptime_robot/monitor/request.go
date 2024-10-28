@@ -27,9 +27,10 @@ type GetMonitorsRequest struct {
 
 	// ResponseTimesAverage averages the response times in intervals using the specified number of minutes.
 	// 0 is the default and is unaveraged. The dashboard uses 30 minutes
-	ResponseTimesAverage int64 `form:"response_times_limit,omitempty"`
-	HasAlertContacts     bool  `form:"alert_contacts,omitempty"`
-	HasAuthType          bool  `form:"auth_type,omitempty"`
+	ResponseTimesAverage     int64 `form:"response_times_limit,omitempty"`
+	HasAlertContacts         bool  `form:"alert_contacts,omitempty"`
+	HasAuthType              bool  `form:"auth_type,omitempty"`
+	HasAllTimeUptimeDuration bool  `form:"all_time_uptime_durations,omitempty"`
 }
 
 /*
@@ -150,5 +151,11 @@ func WithAuthType(shouldInclude bool) MonitorOptions {
 func WithCustomHTTPStatuses(shouldInclude bool) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.HasCustomHTTPStatuses = shouldInclude
+	}
+}
+
+func WithAllTimeUptimeDuration(shouldInclude bool) MonitorOptions {
+	return func(options *GetMonitorsRequest) {
+		options.HasAllTimeUptimeDuration = shouldInclude
 	}
 }

@@ -13,27 +13,28 @@ import (
 )
 
 type Monitor struct {
-	ID                 int64                        `form:"id,omitempty"  json:"id,omitempty"`
-	FriendlyName       string                       `form:"friendly_name" json:"friendly_name"`
-	Url                *url.URL                     `form:"-"             json:"-"`
-	Type               Type                         `form:"type"          json:"type"`
-	Status             Status                       `form:"status"        json:"status"`
-	SubType            SubType                      `form:"sub_type"      json:"sub_type"`
-	KeywordType        KeywordType                  `form:"keyword_type"  json:"keyword_type"`
-	KeywordValue       string                       `form:"keyword_value" json:"keyword_value"`
-	HttpUsername       string                       `form:"http_username" json:"http_username"`
-	HttpPassword       string                       `form:"http_password" json:"http_password"`
-	Port               number.Optional              `form:"port"          json:"port"`
-	Interval           int64                        `form:"interval"      json:"interval"`
-	CreateDatetime     time.Time                    `form:"-"             json:"-"` // FIXME not in API docs. need to send email
-	KeywordCaseType    KeywordCaseType              `form:"-"             json:"keyword_case_type"`
-	Timeout            int64                        `form:"-"             json:"timeout"`
-	AllTimeUptimeRatio *float64                     `form:"-"             json:"all_time_uptime_ratio"`
-	Logs               []LogEntry                   `form:"-"             json:"logs"`
-	ResponseTimes      []ResponseTimeEntry          `form:"-"             json:"response_times,omitempty"`
-	AlertContacts      []alert_contact.AlertContact `form:"-"             json:"alert_contacts"`
-	AuthType           HttpAuthType                 `form:"-"             json:"auth_type"`
-	CustomHttpStatuses CustomHTTPStatus             `form:"-"             json:"custom_http_statuses"`
+	ID                    int64                        `form:"id,omitempty"  json:"id,omitempty"`
+	FriendlyName          string                       `form:"friendly_name" json:"friendly_name"`
+	Url                   *url.URL                     `form:"-"             json:"-"`
+	Type                  Type                         `form:"type"          json:"type"`
+	Status                Status                       `form:"status"        json:"status"`
+	SubType               SubType                      `form:"sub_type"      json:"sub_type"`
+	KeywordType           KeywordType                  `form:"keyword_type"  json:"keyword_type"`
+	KeywordValue          string                       `form:"keyword_value" json:"keyword_value"`
+	HttpUsername          string                       `form:"http_username" json:"http_username"`
+	HttpPassword          string                       `form:"http_password" json:"http_password"`
+	Port                  number.Optional              `form:"port"          json:"port"`
+	Interval              int64                        `form:"interval"      json:"interval"`
+	CreateDatetime        time.Time                    `form:"-"             json:"-"` // FIXME not in API docs. need to send email
+	KeywordCaseType       KeywordCaseType              `form:"-"             json:"keyword_case_type"`
+	Timeout               int64                        `form:"-"             json:"timeout"`
+	AllTimeUptimeRatio    *float64                     `form:"-"             json:"all_time_uptime_ratio"`
+	Logs                  []LogEntry                   `form:"-"             json:"logs"`
+	ResponseTimes         []ResponseTimeEntry          `form:"-"             json:"response_times,omitempty"`
+	AlertContacts         []alert_contact.AlertContact `form:"-"             json:"alert_contacts"`
+	AuthType              HttpAuthType                 `form:"-"             json:"auth_type"`
+	CustomHttpStatuses    CustomHTTPStatus             `form:"-"             json:"custom_http_statuses"`
+	AllTimeUptimeDuration UptimeDuration               `form:"-"             json:"all_time_uptime_durations"`
 }
 
 // unencodableMonitor is used to break encoding loops for jsonMonitor
@@ -61,23 +62,24 @@ func (jm jsonMonitor) Monitor() Monitor {
 	}
 
 	return Monitor{ // FIXME might need just use jm.$field instead of the unencodable version. ex SubType/Keyword type might be currently ignored because of this
-		ID:                 jm.unencodableMonitor.ID,
-		FriendlyName:       jm.unencodableMonitor.FriendlyName,
-		Type:               jm.unencodableMonitor.Type,
-		Status:             jm.unencodableMonitor.Status,
-		SubType:            jm.unencodableMonitor.SubType,
-		KeywordType:        jm.unencodableMonitor.KeywordType,
-		KeywordValue:       jm.unencodableMonitor.KeywordValue,
-		HttpUsername:       jm.unencodableMonitor.HttpUsername,
-		HttpPassword:       jm.unencodableMonitor.HttpPassword,
-		Port:               jm.unencodableMonitor.Port,
-		Interval:           jm.unencodableMonitor.Interval,
-		AllTimeUptimeRatio: allTimeUptimeRatio,
-		Logs:               jm.Logs,
-		ResponseTimes:      jm.ResponseTimes,
-		AlertContacts:      jm.AlertContacts,
-		AuthType:           jm.AuthType,
-		CustomHttpStatuses: jm.CustomHttpStatuses,
+		ID:                    jm.unencodableMonitor.ID,
+		FriendlyName:          jm.unencodableMonitor.FriendlyName,
+		Type:                  jm.unencodableMonitor.Type,
+		Status:                jm.unencodableMonitor.Status,
+		SubType:               jm.unencodableMonitor.SubType,
+		KeywordType:           jm.unencodableMonitor.KeywordType,
+		KeywordValue:          jm.unencodableMonitor.KeywordValue,
+		HttpUsername:          jm.unencodableMonitor.HttpUsername,
+		HttpPassword:          jm.unencodableMonitor.HttpPassword,
+		Port:                  jm.unencodableMonitor.Port,
+		Interval:              jm.unencodableMonitor.Interval,
+		AllTimeUptimeRatio:    allTimeUptimeRatio,
+		Logs:                  jm.Logs,
+		ResponseTimes:         jm.ResponseTimes,
+		AlertContacts:         jm.AlertContacts,
+		AuthType:              jm.AuthType,
+		CustomHttpStatuses:    jm.CustomHttpStatuses,
+		AllTimeUptimeDuration: jm.AllTimeUptimeDuration,
 
 		// This will be inaccurate for some older monitors. I'm guessing that since the `create_datetime` attribute
 		// was added to the API at a later date this results in the creation date older pre-existing monitors to
