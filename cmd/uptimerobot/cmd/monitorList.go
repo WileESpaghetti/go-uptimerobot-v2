@@ -47,6 +47,7 @@ func init() {
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasAlertContacts, "alert-contacts", false, "Include alert contacts with monitors")
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasAuthType, "auth-type", false, "Include authentication type with monitors")
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasCustomHTTPStatuses, "custom-http-statuses", false, "Include list of HTTP statuses that are considered Up/Down")
+	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasAllTimeUptimeDuration, "all-time-uptime-duration", false, "Include all time uptime durations")
 }
 
 const errBadMonitorListFormat = "could not get monitor list: %w"
