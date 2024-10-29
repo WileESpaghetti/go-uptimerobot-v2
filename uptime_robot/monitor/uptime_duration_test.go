@@ -32,6 +32,11 @@ func TestUptimeDuration_UnmarshalJSON(t *testing.T) {
 			want:     UptimeDuration{},
 			hasError: true,
 		},
+		"invalid: not a string": {
+			in:       "123",
+			want:     UptimeDuration{},
+			hasError: true,
+		},
 		"valid": {
 			in: "\"123-234-345\"",
 			want: UptimeDuration{
