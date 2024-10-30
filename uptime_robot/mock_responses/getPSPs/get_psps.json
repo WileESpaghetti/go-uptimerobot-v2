@@ -1,0 +1,22 @@
+{
+  "stat": "ok",
+  "pagination": {
+    "offset": 0,
+    "limit": 50,
+    "total": 1
+  },
+  "psps": [
+    {
+      "id": 123456,
+      "friendly_name": "Example Status page",
+      "monitors": [
+        797937445,
+        797937447
+      ],
+      "sort": 1,
+      "status": 1,
+      "standard_url": "https://stats.uptimerobot.com/asfF1XZb0M",
+      "custom_url": ""
+    }
+  ]
+}

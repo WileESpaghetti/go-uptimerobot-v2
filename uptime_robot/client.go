@@ -5,6 +5,7 @@ import (
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/account"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/alert_contact"
 	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/monitor"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/public_status_page"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -138,4 +139,20 @@ func (c *Client) GetAlertContacts(options ...alert_contact.AlertContactOptions) 
 	}
 
 	return env.AlertContacts, err
+}
+
+func (c *Client) GetPublicStatusPages(options ...public_status_page.PublicStatusPageOptions) ([]public_status_page.PublicStatusPage, error) {
+	env := &public_status_page.GetPublicStatusPages{}
+
+	params := &public_status_page.GetPublicStatusPagesRequest{}
+	for _, o := range options {
+		o(params)
+	}
+
+	err := c.Get("getPSPs", env, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return env.PublicStatusPages, err
 }
