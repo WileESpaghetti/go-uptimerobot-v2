@@ -8,7 +8,7 @@ type GetAlertContacts struct {
 }
 
 type GetAlertContactsRequest struct {
-	AlertContacts AlertContacts `form:"alert_contact,omitempty"`
+	AlertContacts AlertContacts `form:"alert_contacts,omitempty"`
 }
 
 // AlertContactOptions configures a GetAlertContactsRequest
