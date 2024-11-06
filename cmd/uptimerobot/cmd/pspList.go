@@ -5,6 +5,11 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot"
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/public_status_page"
+	"io"
+	"strings"
+	"text/tabwriter"
 
 	"github.com/spf13/cobra"
 )
@@ -19,21 +24,41 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("pspList called")
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return PSPListAction(cmd.OutOrStdout(), apiClient, args)
 	},
 }
 
 func init() {
 	pspCmd.AddCommand(pspListCmd)
+}
 
-	// Here you will define your flags and configuration settings.
+const errBadPSPListFormat = "could not get monitor list: %w"
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// pspListCmd.PersistentFlags().String("foo", "", "A help for foo")
+func PSPListAction(out io.Writer, apiClient *uptime_robot.Client, args []string) error {
+	psps := make(public_status_page.PublicStatusPages, 0, len(args))
+	if len(args) > 0 {
+		contactIDs := strings.Join(args, "-")
+		if err := psps.Set(contactIDs); err != nil {
+			return fmt.Errorf(errBadPSPListFormat, err)
+		}
+	}
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// pspListCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	getPSPResults, err := apiClient.GetPublicStatusPages(public_status_page.WithPublicStatusPages(psps))
+	if err != nil {
+		return err
+	}
+
+	w := tabwriter.NewWriter(out, 0, 0, 2, ' ', tabwriter.Debug)
+	_, _ = fmt.Fprintln(w, strings.Join([]string{"ID", "STATUS", "NAME", "STANDARD URL", "CUSTOM URL"}, "\t"))
+	for _, psp := range getPSPResults {
+		_, _ = fmt.Fprintf(w, "%d\t%s\t%s\t%s\t%s\n", psp.ID, psp.Status, psp.FriendlyName, psp.StandardURL, psp.CustomURL)
+	}
+
+	err = w.Flush()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

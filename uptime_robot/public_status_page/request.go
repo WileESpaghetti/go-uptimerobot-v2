@@ -9,7 +9,7 @@ type GetPublicStatusPages struct {
 }
 
 type GetPublicStatusPagesRequest struct {
-	PublicStatusPages PublicStatusPages `json:"psps,omitempty"`
+	PublicStatusPages PublicStatusPages `form:"psps,omitempty"`
 }
 
 type PublicStatusPageOptions func(*GetPublicStatusPagesRequest)
