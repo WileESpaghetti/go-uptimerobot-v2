@@ -1,7 +1,5 @@
 package account
 
-import "fmt"
-
 type Account struct {
 	Email      string `json:"email"            xml:"email,attr"`
 	UserID     int64  `json:"user_id"`
@@ -19,23 +17,4 @@ type Account struct {
 	// TODO RegisteredAt time.Time `json:"registered_at"`
 	// TODO ActiveSubscription ??? `json:"active_subscriptions"`
 	// TODO Organizations []???
-}
-
-func (a Account) String() string {
-	accountFormat := "Account Details:" +
-		"\n Email:            %s" +
-		"\n Monitor Limit:    %d" +
-		"\n Monitor Interval: %d minute(s)" +
-		"\n\nMonitor Details:" +
-		"\n Up:     %d" +
-		"\n Down:   %d" +
-		"\n Paused: %d\n"
-
-	return fmt.Sprintf(accountFormat,
-		a.Email,
-		a.MonitorLimit,
-		a.MonitorInterval,
-		a.UpMonitors,
-		a.DownMonitors,
-		a.PausedMonitors)
 }

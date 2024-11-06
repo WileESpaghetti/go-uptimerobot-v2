@@ -34,12 +34,25 @@ func AccountAction(out io.Writer, urClient *uptime_robot.Client) error {
 		return ErrNoApiClient
 	}
 
-	account, err := urClient.GetAccountDetails()
+	a, err := urClient.GetAccountDetails()
 	if err != nil {
 		return fmt.Errorf(errGetAccountFailure, err)
 	}
 
-	_, err = fmt.Fprintln(out, account)
+	accountFormat := "Account Details:" +
+		"\n Email:            %s" +
+		"\n Monitor Limit:    %d" +
+		"\n Monitor Interval: %d minute(s)" +
+		"\n\nMonitor Details:" +
+		"\n Up:     %d" +
+		"\n Down:   %d" +
+		"\n Paused: %d\n"
+	_, err = fmt.Fprintf(out, accountFormat, a.Email,
+		a.MonitorLimit,
+		a.MonitorInterval,
+		a.UpMonitors,
+		a.DownMonitors,
+		a.PausedMonitors)
 	if err != nil {
 		return err
 	}
