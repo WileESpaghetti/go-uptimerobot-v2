@@ -48,6 +48,8 @@ func init() {
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasAuthType, "auth-type", false, "Include authentication type with monitors")
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasCustomHTTPStatuses, "custom-http-statuses", false, "Include list of HTTP statuses that are considered Up/Down")
 	monitorListCmd.Flags().BoolVar(&monitorListRequest.HasAllTimeUptimeDuration, "all-time-uptime-duration", false, "Include all time uptime durations")
+	monitorListCmd.Flags().Int64Var(&monitorListRequest.ResponseTimesStartDate, "response-times-start-date", 0, "Start date of returned response times as a unix timestamp")
+	monitorListCmd.Flags().Int64Var(&monitorListRequest.ResponseTimesEndDate, "response-times-end-date", 0, "End date of returned response times as a unix timestamp")
 }
 
 const errBadMonitorListFormat = "could not get monitor list: %w"

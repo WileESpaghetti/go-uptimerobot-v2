@@ -83,8 +83,8 @@ func main() {
 - [X] response_times
   - [X] response_times_limit
   - [X] response_times_average
-  - [ ] response_times_start_date
-  - [ ] response_times_end_date
+  - [X] response_times_start_date
+  - [X] response_times_end_date
 - [X] alert_contacts
 - [ ] mwindows
 - [ ] ssl

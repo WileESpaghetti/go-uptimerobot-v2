@@ -1,6 +1,9 @@
 package monitor
 
-import "github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
+import (
+	"github.com/WileESpaghetti/go-uptimerobot-v2/uptime_robot/api"
+	"time"
+)
 
 // GetMonitors provides monitor configuration and status information.
 type GetMonitors struct {
@@ -28,6 +31,8 @@ type GetMonitorsRequest struct {
 	// ResponseTimesAverage averages the response times in intervals using the specified number of minutes.
 	// 0 is the default and is unaveraged. The dashboard uses 30 minutes
 	ResponseTimesAverage     int64 `form:"response_times_limit,omitempty"`
+	ResponseTimesStartDate   int64 `form:"response_times_start_date,omitempty"`
+	ResponseTimesEndDate     int64 `form:"response_times_end_date,omitempty"`
 	HasAlertContacts         bool  `form:"alert_contacts,omitempty"`
 	HasAuthType              bool  `form:"auth_type,omitempty"`
 	HasAllTimeUptimeDuration bool  `form:"all_time_uptime_durations,omitempty"`
@@ -157,5 +162,12 @@ func WithCustomHTTPStatuses(shouldInclude bool) MonitorOptions {
 func WithAllTimeUptimeDuration(shouldInclude bool) MonitorOptions {
 	return func(options *GetMonitorsRequest) {
 		options.HasAllTimeUptimeDuration = shouldInclude
+	}
+}
+
+func WithResponseTimesBetween(startDate time.Time, endDate time.Time) MonitorOptions {
+	return func(options *GetMonitorsRequest) {
+		options.ResponseTimesStartDate = startDate.Unix()
+		options.ResponseTimesEndDate = endDate.Unix()
 	}
 }
