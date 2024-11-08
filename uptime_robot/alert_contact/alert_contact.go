@@ -51,7 +51,7 @@ func (t Type) String() string {
 	case TypeSlack:
 		return "Slack"
 	case TypeVoiceCall:
-		return "VoiceCall"
+		return "Voice Call"
 	case TypeSplunk:
 		return "Splunk"
 	case TypePagerDuty:
@@ -59,9 +59,9 @@ func (t Type) String() string {
 	case TypeOpsgenie:
 		return "Opsgenie"
 	case TypeMSTeams:
-		return "MSTeams"
+		return "MS Teams"
 	case TypeGoogleChat:
-		return "GoogleChat"
+		return "Google Chat"
 	case TypeDiscord:
 		return "Discord"
 	default:

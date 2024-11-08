@@ -4,11 +4,133 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-test/deep"
+	"strings"
 	"testing"
 	"time"
 )
 
+func TestType_String(t *testing.T) {
+	tests := map[string]struct {
+		in   Type
+		want string
+	}{
+		"sms": {
+			in:   TypeSMS,
+			want: "SMS",
+		},
+		"email": {
+			in:   TypeEmail,
+			want: "Email",
+		},
+		"twitter": {
+			in:   TypeTwitter,
+			want: "Twitter",
+		},
+		"webhook": {
+			in:   TypeWebhook,
+			want: "Webhook",
+		},
+		"pushbullet": {
+			in:   TypePushbullet,
+			want: "Pushbullet",
+		},
+		"zapier": {
+			in:   TypeZapier,
+			want: "Zapier",
+		},
+		"prosms": {
+			in:   TypeProSMS,
+			want: "ProSMS",
+		},
+		"pushover": {
+			in:   TypePushover,
+			want: "Pushover",
+		},
+		"slack": {
+			in:   TypeSlack,
+			want: "Slack",
+		},
+		"voicecall": {
+			in:   TypeVoiceCall,
+			want: "Voice Call",
+		},
+		"splunk": {
+			in:   TypeSplunk,
+			want: "Splunk",
+		},
+		"pagerduty": {
+			in:   TypePagerDuty,
+			want: "PagerDuty",
+		},
+		"opsgenie": {
+			in:   TypeOpsgenie,
+			want: "Opsgenie",
+		},
+		"msteams": {
+			in:   TypeMSTeams,
+			want: "MS Teams",
+		},
+		"googlechat": {
+			in:   TypeGoogleChat,
+			want: "Google Chat",
+		},
+		"discord": {
+			in:   TypeDiscord,
+			want: "Discord",
+		},
+		"unknown": {
+			in:   Type(0),
+			want: "Unknown",
+		},
+		"unknown 2": {
+			in:   Type(123),
+			want: "Unknown",
+		},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			//t.Parallel() // marks each test case as capable of running in parallel with each other
+			if got := tt.in.String(); !strings.EqualFold(got, tt.want) {
+				t.Errorf("String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestStatus_String(t *testing.T) {
+	tests := map[string]struct {
+		in   Status
+		want string
+	}{
+		"sms": {
+			in:   StatusNotActivated,
+			want: "Not Activated",
+		},
+		"email": {
+			in:   StatusPaused,
+			want: "Paused",
+		},
+		"twitter": {
+			in:   StatusActive,
+			want: "Active",
+		},
+		"unknown": {
+			in:   Status(123),
+			want: "Unknown",
+		},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			//t.Parallel() // marks each test case as capable of running in parallel with each other
+			if got := tt.in.String(); !strings.EqualFold(got, tt.want) {
+				t.Errorf("String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestAlertContact_UnmarshalJSON(t *testing.T) {
+	// TODO add test to make sure leading zeros are not treated as octal and show up in output
 	acJson := []byte(`{
 	"id": "12345678",
 	"type": 2,
