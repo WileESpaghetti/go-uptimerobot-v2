@@ -1,0 +1,7 @@
+{
+  "stat": "fail",
+  "error": {
+    "type": "bad_request",
+    "message": "Bad Request (body is not a valid JSON)"
+  }
+}

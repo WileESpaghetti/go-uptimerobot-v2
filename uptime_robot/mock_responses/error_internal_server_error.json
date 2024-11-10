@@ -1,0 +1,8 @@
+// recieved when passing getMonitors {"monitors": ["12345"]}
+{
+  "stat": "fail",
+  "error": {
+    "type": "internal_error",
+    "message": "Internal server error."
+  }
+}

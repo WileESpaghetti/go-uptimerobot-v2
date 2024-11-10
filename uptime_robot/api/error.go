@@ -7,6 +7,8 @@ const (
 	ErrorTypeParameterMissing = "missing_parameter"
 	ErrorTypeNotAuthorized    = "not_authorized"
 	ErrorTypeInvalidParameter = "invalid_parameter"
+	ErrorTypeBadRequest       = "bad_request"
+	ErrorTypeInternalError    = "internal_error"
 )
 
 // Error messages that are more user-friendly (wordy) than what the UptimeRobot provides
@@ -31,6 +33,10 @@ func (e Error) Error() string {
 	case ErrorTypeNotAuthorized:
 		return ErrNotAuthorized
 	case ErrorTypeInvalidParameter:
+		return e.Message
+	case ErrorTypeBadRequest:
+		return e.Message
+	case ErrorTypeInternalError:
 		return e.Message
 	default:
 		if len(e.Message) > 0 {
