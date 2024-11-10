@@ -49,7 +49,7 @@ func AccountAction(out io.Writer, urClient *uptime_robot.Client) error {
 		"\n Paused: %d\n"
 	_, err = fmt.Fprintf(out, accountFormat, a.Email,
 		a.MonitorLimit,
-		a.MonitorInterval,
+		int64(a.MonitorInterval.Minutes()),
 		a.UpMonitors,
 		a.DownMonitors,
 		a.PausedMonitors)
