@@ -37,12 +37,12 @@ type Monitor struct {
 	AllTimeUptimeDuration UptimeDuration               `form:"-"             json:"all_time_uptime_durations"`
 }
 
-// unencodableMonitor is used to break encoding loops for jsonMonitor
-type unencodableMonitor Monitor
+// monitor is used to break encoding loops for jsonMonitor
+type monitor Monitor
 
 // jsonMonitor is used to handle converting between API JSON responses and the more strictly-typed Monitor struct
 type jsonMonitor struct {
-	unencodableMonitor
+	monitor
 	Url                string          `form:"url"                   json:"url"`
 	CreateDatetime     int64           `form:"create_datetime"       json:"create_datetime"`
 	SubType            number.Optional `form:"sub_type"              json:"sub_type"`
@@ -62,17 +62,17 @@ func (jm jsonMonitor) Monitor() Monitor {
 	}
 
 	return Monitor{ // FIXME might need just use jm.$field instead of the unencodable version. ex SubType/Keyword type might be currently ignored because of this
-		ID:                    jm.unencodableMonitor.ID,
-		FriendlyName:          jm.unencodableMonitor.FriendlyName,
-		Type:                  jm.unencodableMonitor.Type,
-		Status:                jm.unencodableMonitor.Status,
-		SubType:               jm.unencodableMonitor.SubType,
-		KeywordType:           jm.unencodableMonitor.KeywordType,
-		KeywordValue:          jm.unencodableMonitor.KeywordValue,
-		HttpUsername:          jm.unencodableMonitor.HttpUsername,
-		HttpPassword:          jm.unencodableMonitor.HttpPassword,
-		Port:                  jm.unencodableMonitor.Port,
-		Interval:              jm.unencodableMonitor.Interval,
+		ID:                    jm.monitor.ID,
+		FriendlyName:          jm.monitor.FriendlyName,
+		Type:                  jm.monitor.Type,
+		Status:                jm.monitor.Status,
+		SubType:               jm.monitor.SubType,
+		KeywordType:           jm.monitor.KeywordType,
+		KeywordValue:          jm.monitor.KeywordValue,
+		HttpUsername:          jm.monitor.HttpUsername,
+		HttpPassword:          jm.monitor.HttpPassword,
+		Port:                  jm.monitor.Port,
+		Interval:              jm.monitor.Interval,
 		AllTimeUptimeRatio:    allTimeUptimeRatio,
 		Logs:                  jm.Logs,
 		ResponseTimes:         jm.ResponseTimes,

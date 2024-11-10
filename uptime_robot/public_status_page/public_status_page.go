@@ -27,10 +27,10 @@ type PublicStatusPage struct {
 //	return c.GetMonitors(monitor.WithMonitors(psp.monitorIDs))
 //}
 
-type unencodablePSP PublicStatusPage
+type psp PublicStatusPage
 
 type jsonPSP struct {
-	unencodablePSP
+	psp
 	StandardURL string `json:"standard_url"`
 	CustomURL   string `json:"custom_url"`
 	//MonitorIDs  string `json:"monitors"`

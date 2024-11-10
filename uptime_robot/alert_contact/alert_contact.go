@@ -105,12 +105,12 @@ type AlertContact struct {
 	Recurrence time.Duration `json:"recurrence"`
 }
 
-// unencodableMonitor is used to break encoding loops for jsonMonitor
-type unencodableAlertContact AlertContact
+// alertContact is used to break encoding loops for jsonMonitor
+type alertContact AlertContact
 
 // jsonResponseTimeEntry is an intermediate form that we will use to convert between more strict time formats
 type jsonAlertContact struct {
-	unencodableAlertContact
+	alertContact
 
 	// minutes
 	Threshold int64 `json:"threshold"`
@@ -147,11 +147,11 @@ func (ac *AlertContact) UnmarshalJSON(b []byte) error {
 
 // MarshalJSON will convert the time formats between what the API uses and what the API uses
 func (ac *AlertContact) MarshalJSON() ([]byte, error) {
-	uac := unencodableAlertContact(*ac)
+	uac := alertContact(*ac)
 	return json.Marshal(jsonAlertContact{
-		unencodableAlertContact: uac,
-		Threshold:               int64(ac.Threshold / time.Minute),
-		Recurrence:              int64(ac.Recurrence / time.Minute),
+		alertContact: uac,
+		Threshold:    int64(ac.Threshold / time.Minute),
+		Recurrence:   int64(ac.Recurrence / time.Minute),
 	})
 }
 

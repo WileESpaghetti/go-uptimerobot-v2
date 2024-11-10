@@ -49,10 +49,10 @@ type LogEntry struct {
 	} `json:"reason"`
 }
 
-type unencodableLogEntry LogEntry
+type logEntry LogEntry
 
 type jsonLogEntry struct {
-	unencodableLogEntry
+	logEntry
 	Datetime int64 `json:"datetime"`
 	Duration int64 `json:"duration"`
 }
@@ -81,7 +81,7 @@ func (l *LogEntry) UnmarshalJSON(data []byte) error {
 
 func (l *LogEntry) MarshalJSON() ([]byte, error) {
 	jm := jsonLogEntry{
-		unencodableLogEntry: unencodableLogEntry{
+		logEntry: logEntry{
 			Id:     l.Id,
 			Type:   l.Type,
 			Reason: l.Reason,
