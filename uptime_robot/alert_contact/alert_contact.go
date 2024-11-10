@@ -2,7 +2,6 @@ package alert_contact
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 	"time"
 )
@@ -147,10 +146,8 @@ func (ac *AlertContact) UnmarshalJSON(b []byte) error {
 }
 
 // MarshalJSON will convert the time formats between what the API uses and what the API uses
-func (ac AlertContact) MarshalJSON() ([]byte, error) {
-	a := int64(ac.Threshold / time.Minute)
-	fmt.Println(a)
-	uac := unencodableAlertContact(ac)
+func (ac *AlertContact) MarshalJSON() ([]byte, error) {
+	uac := unencodableAlertContact(*ac)
 	return json.Marshal(jsonAlertContact{
 		unencodableAlertContact: uac,
 		Threshold:               int64(ac.Threshold / time.Minute),

@@ -183,7 +183,7 @@ func TestAlertContact_MarshalJSON(t *testing.T) {
 		Recurrence:   time.Duration(15) * time.Minute,
 	}
 
-	gotJson, err := json.Marshal(ac)
+	gotJson, err := json.Marshal(&ac)
 	if err != nil {
 		t.Errorf("unexpected error unmarshalling json: %v", err)
 	}
