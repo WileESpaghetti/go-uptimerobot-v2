@@ -45,5 +45,6 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&apiKey, FlagApiKey, "", "config file (default is $HOME/.uptimerobot.yaml)")
 	cobra.OnInitialize(func() {
 		apiClient = uptime_robot.NewClient(apiKey)
+		apiClient.UserAgent = "go-uptimerobot-v2/1.0.0 (uptimerobot command; Language=Go)"
 	})
 }

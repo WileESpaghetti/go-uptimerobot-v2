@@ -126,18 +126,23 @@ func main() {
   * [types] double check time.Duration conversions they might need to be in int32 instead of int64
   * [types] some of the type stuff don't need to be exported and should only expose New* functions to create them
   * [types] maybe add typed versions of alert contacts where Value is not a string
-  * [types] account monitor interval -> time.duration
   * [types] maybe add error/warning returns for options if you are assigning conflicting options (ex. response times limit and response times start/end)
   * [types] use generics instead of custom response types?
   * [types] double check struct tags match api docs (plural vs singular)
+  * [types] just use lowercase version of structs instead of unencodable*
+  * [api] should monitor.KeywordCaseType be a boolean IsCaseSensitive instead? might not be better as a function because API could add extra types
+  * [types] definitely need to make sure we use pointers for some stuff that's optional especially for dates (ex. maintenance_window.status)
+  * [types] do not publish OptionalNumber types. should be *int instead
   * [slices] best practices for custom slice types
-  * [consistency] ensure we conform to common api client common usage patterns
-  * [consistency] use of uptime_robot vs uptimerobot
-  * [consistency] some stuff uses 0/1 for boolean, but others (ex. auth_type) uses true/false (good for fuzzing/unit test consideration)
-  * [consistency] make sure function args match across interfaces (ex UnmarshalJSON(b []byte) vs UnmarshalJSON(data []byte))
   * [consistency] consistent handling of ID's. Alert contacts are strings and can have leading zeros so needs to remain a string, but monitors are returned as numbers
+  * [consistency] consistent naming in tests (ex. want vs expected)
   * [consistency] ensure best practices for implementing MarshalJSON and UnMarshalJSON seems like MarshalJSON - pass pointer, use json.* functions
-  * [testing] test with different key types
+  * [consistency] ensure we conform to common api client common usage patterns
+  * [consistency] make sure function args match across interfaces (ex UnmarshalJSON(b []byte) vs UnmarshalJSON(data []byte))
+  * [consistency] some stuff uses 0/1 for boolean, but others (ex. auth_type) uses true/false (good for fuzzing/unit test consideration) also need to fuzz
+  * [consistency] use of uptime_robot vs uptimerobot
+  * [consistency] use strings.folds when comparing strings in unit tests
+  * [testing] test integration with different key types
   * [enums] monitors.Status: does it make more sense to have this as a struct {ID uint, Value string} and return error from NewStatus() if not enum? (all enums)
   * There's some New*() functions that take a parameter, might make sense to separate them into New*FromT(T) functions
   * [api] consider removing some of the string stuff. it's mostly to make the command output easier, but doesn't really make sense as a part of a library
@@ -149,28 +154,24 @@ func main() {
   * [pkg] move all of the stuff out of the api package right now api.Error/Envelop causes circular references
   * when checking errors use the new Error.Is (100 go mistakes)
   * go:generate stringer - https://last9.io/blog/golang-stringer-tool/
-  * [tests] use strings.folds when comparing strings in unit tests
-  * [types] should monitor.KeywordCaseType be a boolean IsCaseSensitive instead?
   * [godoc] check for consistent formatting of fields in godoc
   * [godoc] add godoc for Request options
+  * [enum] zero values "unknown" or ""?
   * ensure zero values match what api zero values/defaults are
   * User friendly error messages: does it make more sense to move these to the command line client or some other higher level package?
   * uptimerobot python client uses the term "List separator" for the dashed numbers. should probably use that in code comments instead of other stuff (ex. listSeparatedValueFlag)
   * rename some of the GetMonitorRequest fields to make more semantic sense (ex. ResponseTimesLimit -> MaxResponseTimes, ResponseTimesAverage -> ResponseTimeAverageInterval?)
   * [Account] double check for missing attributes
   * [Monitor] add missing form structs
+  * [Monitor] maybe have some With* functions for response times that accept a duration and start date or some combo so you can express stuff like (WithPrevious(time.duration))
   * I don't like the CustomHttpStatus struct name
-  * just use lowercase version of structs instead of unencodable*
   * there might need to be some distinction/cleanup between api json serialization vs normal json serialization (ex. UptimeDuration 123-234-234 vs {"up": 123, "down": ...})
-  * consistent naming in tests (ex. want vs expected)
-  * definitely need to make sure we use pointers for some stuff that's optional especially for dates (ex. maintenance_window.status)
-  * maybe make a function for Maintenance window to get the next time.Time that it will be running
   * handle retry error headers
-  * GetMonitorsRequest Response times should accept time.Time and convert to unix time
-  * add options to hide sensitive info like psp>password
-  * should url.URL be *url.URL?
+  * `GetMonitorsRequest` Response times should accept time.Time and convert to unix time
+  * [api] add options to hide sensitive info like psp>password. This would kind of be nice as a struct field
+  * maybe have With* and Include* custom options based on data type
+  * use constant for version number in useragent
 * commands
-  * separate user agent for the command line client than the library usage
   * ensure we conform to common api client common usage patterns
   * find out how other command line clients handle pagination
   * zero values vs nils on flags
@@ -184,10 +185,13 @@ func main() {
   * command output formatters like docker and kubectl
   * remove Get* prefix when not needed (ex. GetSlice)
   * verify all premium features and creating/editing them
-  * use consistent capitalization of HTTP in field/struct/function names
+  * [consistency] use consistent capitalization of HTTP in field/struct/function names
   * if `monitor list` args are a string then use search. if ids conflict then split into 2 requests and merge
+  * if `response-times-start-date` and no end date then auto fill in now() for end date
+  * if `response-times-end-date` and no start date then fail command
 * uncategorized
   * does it cause bad ergonomics to strict type ResponseTimeEntry instead of keeping them as unix timestamp and ms
   * maybe group stuff like all of the ResponseTime stuff
   * add golangci-lint to github actions
   * see if there is anything worth borrowing from https://github.com/bitfield/uptimerobot
+  * https://github.com/araddon/dateparse
